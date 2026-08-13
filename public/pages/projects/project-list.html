@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.jpg" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="d-flex">
+        <div id="sidebar-display"></div>
+        <div class="flex-grow-1">
+            <main id="p-2">
+                <div class="m-3">
+                    <div class="m-1">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="bi bi-search"></i></div>
+                                    <input type="text" id="search-input" class="form-control" id="autoSizingInputGroup" placeholder="Search...">
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <select id="input-status" class="dropdown form-control">
+                                    <option value="">SELECT STATUS</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped text-center">
+                        <thead class="fw-bold">
+                            <tr>
+                                <th>No</th>
+                                <th>Project Code</th>
+                                <th>Project Name</th>
+                                <th>Client Company</th>
+                                <th>PIC Name</th>
+                                <th>Email</th>
+                                <th>Telephone Number</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Contract Value</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center" id="table-body"></tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/layout/sidebar.js"></script>
+    <script type="module" src="/assets/js/modules/projects/managements/project.style.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

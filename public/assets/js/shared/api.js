@@ -1,5 +1,6 @@
 export const apiEndpoints = {
     login: '/api/users',
+    allProject: '/api/projects'
 }
 
 async function get(url){
