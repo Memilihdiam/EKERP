@@ -2,8 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebarDisplay = document.getElementById('sidebar-display');
 
     const itemPages = [
-        {name: 'Dashboard', path: '/pages/dashboards/dashboard.html'},
-        {name: 'Projects', path: '/pages/projects/project-list.html'}
+        {name: 'Dashboard', path: '/pages/dashboards/dashboard'},
+        {name: 'Projects', path: '/pages/projects/project-list'},
+        {name: 'Clients', path: '/pages/clients/client-list'}
     ]
 
     async function renderSidebar(){

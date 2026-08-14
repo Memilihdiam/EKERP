@@ -44,3 +44,33 @@ exports.authService = async (userId, password) => {
 
     return { sessionId };
 }
+
+exports.userData = async (userId) => {
+    if(!userId){
+        const error = new Error('Not Found User ID');
+        error.statusCode = httpStatus.notFound;
+        throw error;
+    }
+
+    const cachedKey = `user:${userId}`;
+    const cachedEx = 3600;
+
+    try{
+        const cacheData = await redisClient.get(cachedKey);
+        if(cacheData){
+            return { user: JSON.parse(cacheData) };
+        }
+
+        const user = await repository.findUserById(userId);
+        if(!user){
+            const error = new Error('Not Found User');
+            error.statusCode = httpStatus.notFound;
+            throw error;
+        }
+
+        await redisClient.set(cachedKey, JSON.stringify(user), 'EX', cachedEx);
+        return { user };
+    }catch(err){
+        throw err;
+    }
+}

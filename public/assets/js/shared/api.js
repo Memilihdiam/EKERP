@@ -1,5 +1,6 @@
 export const apiEndpoints = {
     login: '/api/users',
+    user: '/api/users/me',
     allProject: '/api/projects',
     clients: '/api/clients',
     industries: '/api/clients/industry'

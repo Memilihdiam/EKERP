@@ -12,7 +12,12 @@ app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public'), {extensions: ['.html']}));
+app.get(/\.html$/, (req, res) => {
+    const cleanUrl = req.url.replace('.html', '');
+    res.redirect(301, cleanUrl);
+})
+
+app.use(express.static(path.join(__dirname, './public'), {extensions: ['html']}));
 app.use('/api', apiRoute);
 
 app.listen(port, () => {
