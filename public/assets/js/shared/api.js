@@ -1,6 +1,8 @@
 export const apiEndpoints = {
     login: '/api/users',
-    allProject: '/api/projects'
+    allProject: '/api/projects',
+    clients: '/api/clients',
+    industries: '/api/clients/industry'
 }
 
 async function get(url){
