@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Client</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.jpg" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .btn{
+            width:150px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="d-flex">
+        <div class="flex-grow-1">
+            <div id="header-display"></div>
+            <div class="d-flex justify-content-center align-items-center m-3">
+                <div class="shadow-sm border col-lg-10 col-md-12 rounded">
+                    <p class="fw-bold fs-1">Add Clients</p>
+                    <form id="add-form" class="p-3">
+                        <div class="row">
+                            <div class="col-6 p-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-code"></i></span>
+                                    <input class="form-control" id="client-code" placeholder="Client Code (4 Maks Char)">
+                                </div>
+                            </div>
+                            <div class="col-6 p-2">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                                    <input type="text" class="form-control" id="company-name" placeholder="Company Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 p-2">
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="bi bi-shop-window"></i></div>
+                                    <select class="form-control" id="industry-name"></select>
+                                </div>
+                            </div>
+                            <div class="col-6 p-2">
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="bi bi-person-fill"></i></div>
+                                    <input type="text" class="form-control" id="pic-name" placeholder="Person In Contact Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 p-2">
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="bi bi-envelope-at"></i></div>
+                                    <input type="email" id="email" class="form-control" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="col-4 p-2">
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="bi bi-telephone"></i></div>
+                                    <input type="number" id="telephone-number" class="form-control" placeholder="Telehone Number">
+                                </div>
+                            </div>
+                            <div class="col-4 p-2">
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="bi bi-house"></i></div>
+                                    <input type="text" id="address" class="form-control" placeholder="Adress">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 p-2">
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="bi bi-activity"></i></div>
+                                    <select id="status" class="form-control"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-center m-2">
+                                <button type="submit" class="btn btn-primary me-2">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="col-12 d-flex-justify-content-center text-center m-2">
+                            <button type="button" class="btn btn-secondary" id="back-btn">Back</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/modules/procurements/clients/client.add.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

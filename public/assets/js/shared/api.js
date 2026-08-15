@@ -2,6 +2,7 @@ export const apiEndpoints = {
     login: '/api/users',
     user: '/api/users/me',
     allProject: '/api/projects',
+    detailProject: (id) => `/api/projects/${id}`,
     clients: '/api/clients',
     industries: '/api/clients/industry'
 }

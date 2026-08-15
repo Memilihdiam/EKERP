@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.jpg" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="d-flex">
+        <div id="sidebar-display"></div>
+        <div class="flex-grow-1">
+            <div id="header-display"></div>
+            <div class="p-2">
+                <div class="m-2">
+                    <button class="btn btn-primary" onclick="window.location.href='/pages/clients/add-client.html'">Add Clients</button>
+                </div>
+                <div class="d-flex">
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Client Code</th>
+                                <th>Company Name</th>
+                                <th>industry</th>
+                                <th>PIC Name</th>
+                                <th>Email</th>
+                                <th>Telephone Number</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/layout/sidebar.js"></script>
+    <script type="module" src="/assets/js/modules/procurements/clients/client.style.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

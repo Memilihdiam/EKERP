@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let no = 1;
             data.forEach(item => {
                 tableRowHTML += `
-                    <tr>
+                    <tr data-id="${item.id}" class="project-row">
                         <td>${no++}</td>
                         <td>${item.project_code}</td>
                         <td>${item.project_name}</td>
@@ -56,6 +56,21 @@ document.addEventListener('DOMContentLoaded', () => {
         storeData = data.projects;
         renderTableProjects(storeData);
     }
+
+    tableBody.addEventListener('click', (e) => {
+        const row = e.target.closest('tr.project-row');
+        if (!row) return;
+
+        // Prevent navigation if a button inside the row was clicked
+        if (e.target.closest('button')) {
+            return;
+        }
+
+        const projectId = row.dataset.id;
+        if (projectId) {
+            window.location.href = `/pages/projects/project-detail/${projectId}`;
+        }
+    })
 
     initialRender();
 })

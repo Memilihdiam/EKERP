@@ -23,3 +23,28 @@ exports.findAllProject = async () => {
         throw err;
     }
 }
+
+exports.findProjectById = async (id) => {
+    if(!id){
+        const error = new Error('Id Not Found');
+        error.statusCode = httpStatus.notFound;
+        throw error;
+    };
+
+    const cachedKey = `project-detail:${id}`;
+    const cachedEx = 3600;
+
+    try{
+        const cacheData = await redisClient.get(cachedKey);
+        if(cacheData){
+            return { project: JSON.parse(cacheData) };
+        }
+
+        const project = await repository.findProjectsById(id);
+        
+        await redisClient.set(cachedKey, JSON.stringify(project), 'EX', cachedEx);
+        return { project };
+    }catch(err){
+        throw err;
+    }
+}
