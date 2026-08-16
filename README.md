@@ -392,9 +392,8 @@ CREATE TABLE clients (
     client_code VARCHAR(20) NOT NULL UNIQUE,
     company_name VARCHAR(255) NOT NULL,
     industry_id BIGINT NOT NULL,
-    pic_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    telephone_number VARCHAR(20) NOT NULL,
+    company_email VARCHAR(255) NOT NULL UNIQUE,
+    company_number VARCHAR(20) NOT NULL,
     address TEXT,
     
     status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
@@ -403,6 +402,35 @@ CREATE TABLE clients (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_industry_id FOREIGN KEY (industry_id) REFERENCES industries(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: client_contacts**
+```sql
+CREATE TABLE client_contacts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    client_id BIGINT NOT NULL,
+
+    name VARCHAR(100) NOT NULL,
+    department VARCHAR(100),
+    position VARCHAR(100),
+
+    email VARCHAR(255),
+    phone VARCHAR(20),
+    whatsapp_number VARCHAR(20),
+
+    is_primary BOOLEAN DEFAULT FALSE,
+    status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_client_contact_client
+        FOREIGN KEY (client_id)
+        REFERENCES clients(id)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 

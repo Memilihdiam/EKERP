@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.jpg" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="d-flex">
+        <div id="sidebar-display"></div>
+        <div class="flex-grow-1">
+            <div id="header-display"></div>
+            <main class="p-3">
+                <div class="d-flex justify-content-between align-items center mb-3">
+                    <h3 class="text-dark">Client Detail</h3>
+                </div>
+                <div id="client-detail-content">
+                    <div id="loading-spinner" class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-4" id="details-tab" style="display:none;">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="client-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button type="button" class="nav-link active" id="pic-tab" data-bs-toggle="tab" data-bs-target="#pic" role="tab" aria-controls="pic" aria-selected="true">Person in Charge</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button type="button" class="nav-link" id="rfq-tab" data-bs-toggle="tab" data-bs-target="#rfq" role="tab" aria-controls="rfq" aria-selected="false">Request of Quotation</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button type="button" class="nav-link" id="invoice-tab" data-bs-toggle="tab" data-bs-target="#invoice" role="tab" aria-controls="invoice" aria-selected="false">Invoice</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="client-tabs-content">
+                            <div class="tab-pane fade show active" id="pic" role="tabpanel" aria-labelledby="pic-tab">
+                                <h5 class="card-title">Client Pic</h5>
+                                <div id="pic-details"></div>
+                            </div>
+                            <div class="tab-pane fade" id="rfq" role="tabpanel" aria-labelledby="rfq-tab">
+                                <h5 class="card-title">Client RFQs</h5>
+                                <div id="rfq-details"></div>
+                            </div>
+                            <div class="tab-pane fade" id="invoice" role="tabpanel" aria-labelledby="invoice-tab">
+                                <h5 class="card-title">Client Invoces</h5>
+                                <div id="invoice-details"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/layout/sidebar.js"></script>
+    <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/modules/procurements/clients/client.detail.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function render_header(){
-        const response = await fetchUserData();
+        const response = await fetchUserData(); //
         const userData = response.user;
         const employer_image = userData.image_path ?? '/assets/images/default_profile_image.png';
 
@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const rawHTML = `
             <header class="p-3 bg-white shadow-sm d-flex justify-content-between align-items-center">
+                <!-- Tambahkan ID burger-btn di bawah ini -->
+                <button class="btn" id="burger-btn"><i class="bi bi-list"></i></button>
                 <h1 class="h4 fw-bold mb-0">${currentPage}</h1>
                 <div class="d-flex align-items-center">
                     <i class="bi bi-bell-fill fs-5 text-secondary me-3"></i>
@@ -44,6 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const logoutButton = document.getElementById('logout-btn');
         logoutButton?.addEventListener('click', () => {
             window.location.href = '/';
+        });
+
+        const burgerBtn = document.getElementById('burger-btn');
+        burgerBtn?.addEventListener('click', () => {
+            // Trigger event global 'toggleSidebar' ketika diklik
+            document.dispatchEvent(new Event('toggleSidebar'));
         });
     }
 })

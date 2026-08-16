@@ -3,7 +3,37 @@ const redisClient = require("../../../config/redis");
 const { httpStatus } = require("../../../utils/util");
 const repository = require('./client.repository');
 
-exports.findClient = async () => {
+exports.getClientById = async (id) => {
+    if(!id){
+        const error = new Error('Not Found Client Id');
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+    const cachedKey = `client:${id}`;
+    const cachedEx = 3600;
+    
+    try{
+        const cacheData = await redisClient.get(cachedKey);
+        if(cacheData){
+            return { client: JSON.parse(cacheData) };
+        }
+
+        const client = await repository.findClientsById(id);
+        const pic = await repository.findPicClient(id);
+        if(!client){
+            const error = new Error('Not Found Data');
+            error.statusCode = httpStatus.notFound;
+            throw error;
+        }
+
+        await redisClient.set(cachedKey, JSON.stringify(client), 'EX', cachedEx);
+        return { client, pic };
+    }catch(err){
+        throw err;
+    }
+}
+
+exports.getAllClients = async () => {
     const cachedKey = 'all-clients';
     const cachedEx = 3600;
 

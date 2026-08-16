@@ -1,5 +1,5 @@
 import { apiEndpoints } from "../../../shared/api.js";
-import { fetchClientsData, fetchIndustriesData } from "./client.data.js";
+import { fetchAllClientsData, fetchIndustriesData } from "./client.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('table-body');
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let no = 1;
             data.forEach(item => {
                 tableRowHTML += `
-                    <tr>
+                    <tr data-id="${item.id}" class="client-row">
                         <td>${no++}</td>
                         <td>${item.client_code}</td>
                         <td>${item.company_name}</td>
@@ -32,10 +32,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function initialRender(){
-        const response = await fetchClientsData();
+        const response = await fetchAllClientsData();
         storeData = response.clients;
         renderTableClients(storeData);
     }
+
+    tableBody.addEventListener('click', (e) => {
+        const row = e.target.closest('tr.client-row');
+        if(!row) return;
+
+        if(e.target.closest('button')){
+            return;
+        }
+
+        const clientId = row.dataset.id;
+        if(clientId){
+            window.location.href = `/pages/clients/client-detail/${clientId}`;
+        }
+    })
 
     initialRender();
 })

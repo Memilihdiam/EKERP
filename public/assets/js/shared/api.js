@@ -4,6 +4,9 @@ export const apiEndpoints = {
     allProject: '/api/projects',
     detailProject: (id) => `/api/projects/${id}`,
     clients: '/api/clients',
+    detailClient: (id) => `/api/clients/${id}`,
+    rfqs: '/api/crfqs',
+    rfqsClient: (id) => `/api/crfqs/${id}`,
     industries: '/api/clients/industry'
 }
 
