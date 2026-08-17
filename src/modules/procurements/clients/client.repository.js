@@ -9,7 +9,6 @@ exports.findAllClients = async () => {
     const [rows] = await pool.execute(
         `SELECT 
             c.*,
-            p.*
             i.name AS industry_name
         FROM clients c
         LEFT JOIN industries i ON c.industry_id = i.id`

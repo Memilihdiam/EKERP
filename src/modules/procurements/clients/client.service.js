@@ -26,7 +26,12 @@ exports.getClientById = async (id) => {
             throw error;
         }
 
-        await redisClient.set(cachedKey, JSON.stringify(client), 'EX', cachedEx);
+        if(!pic){
+            return {client, pic: []};
+        }
+
+        const dataToCache = { client, pic };
+        await redisClient.set(cachedKey, JSON.stringify(dataToCache), 'EX', cachedEx);
         return { client, pic };
     }catch(err){
         throw err;

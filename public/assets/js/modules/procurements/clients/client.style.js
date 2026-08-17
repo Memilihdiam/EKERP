@@ -19,9 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${item.client_code}</td>
                         <td>${item.company_name}</td>
                         <td>${item.industry_name}</td>
-                        <td>${item.pic_name}</td>
-                        <td>${item.email}</td>
-                        <td>${item.telephone_number}</td>
+                        <td>${item.company_email}</td>
+                        <td>${item.company_number}</td>
                         <td>${item.address}</td>
                         <td>${item.status}</td>
                     </tr>

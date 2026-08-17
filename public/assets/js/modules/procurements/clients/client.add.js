@@ -1,5 +1,5 @@
 import { get, post, apiEndpoints } from "../../../shared/api.js";
-import { fetchClientsData, fetchIndustriesData } from "./client.data.js";
+import { fetchIndustriesData } from "./client.data.js";
 import { handleAuthError } from "../../../shared/auth.js";
 
 document.addEventListener('DOMContentLoaded', () => {

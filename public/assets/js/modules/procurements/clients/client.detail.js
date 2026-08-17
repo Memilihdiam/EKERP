@@ -1,9 +1,10 @@
-import { fetchClientData } from "./client.data.js";
+import { fetchClientData, fetchPicData } from "./client.data.js";
 import { fetchClientRfqs } from "../client_rfqs/rfq.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const clientDetail = document.getElementById('client-detail-content');
     const loadingSpinner = document.getElementById('loading-spinner');
+    const detailsTab = document.getElementById('details-tab');
 
     const statusColor = {
         ACTIVE: "badge text-bg-success",
@@ -20,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try{
             const clientId = getClientIdFromUrl();
             const clientData = await fetchClientData(clientId);
-            console.log(clientData);
             let clientContent = '';
     
             if(!clientData){
@@ -45,9 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <p><strong>Client Address: </strong>${clientData.address}</p>
                                 </div>
                                 <div class="col-md-6">
-                                <p><strong>Official Email : </strong>${clientData.company_email}</p>
-                                <p><strong>Official Number: </strong>${clientData.company_number}</p>
-                                <p><strong>Status: </strong><span class="${badgeClass}">${clientData.status}</span></p>
+                                    <p><strong>Official Email : </strong>${clientData.company_email}</p>
+                                    <p><strong>Official Number: </strong>${clientData.company_number}</p>
+                                    <p><strong>Status: </strong><span class="${badgeClass}">${clientData.status}</span></p>
                                 </div>
                             </div>
                         </div>
@@ -67,19 +67,54 @@ document.addEventListener('DOMContentLoaded', () => {
     async function renderClientRfq(){
         const clientId = getClientIdFromUrl();
         const rfqClientData = await fetchClientRfqs(clientId);
+        let rawHTML = '';
         
-        renderAdditionalDetails('pic-details', rfqClientData, 'This Client Still Not Send RFQ')
+        renderAdditionalDetails('rfq-details', rfqClientData, rawHTML, 'This Client Still Not Send RFQ');
+        detailsTab.style.display = 'block';
     }
 
-    function renderAdditionalDetails(elementId, data, emptyMessage){
+    async function renderClientPIC(){
+        const clientId = getClientIdFromUrl();
+        const picClientData = await fetchPicData(clientId);
+        console.log(picClientData);
+        let rawHTML = '';
+        picClientData.forEach(item => {
+            rawHTML += `
+                <tbody>
+                    <tr class="shadow-sm">
+                        <td><strong>Name PIC: </strong>${item.name}</td>
+                        <td><strong>PIC Email: </strong><a class="nav-link" href="https://gmail.com">${item.email}</a></td>
+                        <td><strong>PIC Phone: </strong>${item.phone}</td>
+                        <td><strong>PIC Whatsapp: </strong>${item.whatsapp_number}</td>
+                    </tr>
+                </tbody>
+            `;
+        });
+
+        const table = `
+            <table class="table">
+                ${rawHTML}
+            </table>
+        `;
+
+        renderAdditionalDetails('pic-details', picClientData, table, 'This Client Still not have PIC');
+        detailsTab.style.display = 'block';
+    }
+
+    function renderAdditionalDetails(elementId, data, rawHTML, emptyMessage){
         const container = document.getElementById(elementId);
         if (data && data.length > 0) {
-            container.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            container.innerHTML = rawHTML;
         } else {
             container.innerHTML = `<p class="text-muted">${emptyMessage}</p>`;
         }
     };
 
-    renderClientData();
-    renderClientRfq();
+    function initialRender(){
+        renderClientData();
+        renderClientRfq();
+        renderClientPIC();
+    }
+
+    initialRender();
 })

@@ -9,7 +9,7 @@ exports.findClientById = async (req, res) => {
         res.status(httpStatus.ok).json({
             success: true,
             message: 'Successfuly Fetch Data',
-            client: {client, pic}
+            data: {client, pic}
         })
     }catch(err){
         console.log('Error while fetch client detail, ', err);

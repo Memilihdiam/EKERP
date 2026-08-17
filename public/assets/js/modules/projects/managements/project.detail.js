@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="col-md-6">
                             <p><strong>Project Code:</strong> ${project.project_code}</p>
                             <p><strong>Project Name:</strong> ${project.project_name}</p>
-                            <p><strong>Client:</strong> ${project.client_name || 'N/A'}</p>
+                            <p><strong>Client:</strong> ${project.company_name || 'N/A'}</p>
                         </div>
                         <div class="col-md-6">
                             <p><strong>Start Date:</strong> ${new Date(project.start_date).toLocaleDateString('id-ID')}</p>

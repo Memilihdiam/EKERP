@@ -8,15 +8,50 @@
     <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-    <form id="login-form">
-        <input type="text" id="user-code" required>
-        <input type="password" id="password" required>
-        <p id="message"></p>
-        <button type="submit">Login</button>
-    </form>
+<body>
+    <div class="container-fluid vh-100 p-0">
+        <div class="row g-0 h-100">
+            <!-- Bagian Kiri (Putih dengan Branding) -->
+            <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center bg-white">
+                <div class="text-center">
+                    <img src="/assets/images/company_icon.jpg" alt="Company Logo" class="mb-4" style="max-width: 150px;">
+                    <h1 class="fw-bold text-primary">WICITRA KARSA MANGGALA</h1>
+                    <p class="lead text-muted">Enterprise Resource Planning System</p>
+                </div>
+            </div>
+
+            <!-- Bagian Kanan (Berwarna dengan Form) -->
+            <div class="col-lg-6 d-flex justify-content-center align-items-center" style="background-color: #f0f2f5;">
+                <div class="card shadow-sm border-0" style="width: 25rem;">
+                    <div class="card-body p-5">
+                        <h2 class="card-title text-center mb-4 fw-bold">Welcome Back</h2>
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label for="user-code" class="form-label">User Code</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                    <input type="text" class="form-control" id="user-code" placeholder="Enter your user code" required>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                                </div>
+                            </div>
+                            <p id="message" class="text-danger text-center small"></p>
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="module" src="/assets/js/modules/hris/users/user.auth.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

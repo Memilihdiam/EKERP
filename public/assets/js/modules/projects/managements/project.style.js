@@ -12,9 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.project_code.toLowerCase().includes(searchTerm) ||
                 data.project_name.toLowerCase().includes(searchTerm) ||
                 data.company_name.toLowerCase().includes(searchTerm) ||
-                data.pic_name.toLowerCase().includes(searchTerm) ||
-                data.email.toLowerCase().includes(searchTerm) ||
-                data.telephone_number.toLowerCase().includes(searchTerm) ||
+                data.company_email.toLowerCase().includes(searchTerm) ||
+                data.company_number.toLowerCase().includes(searchTerm) ||
                 data.contract_value.toLowerCase().includes(searchTerm) ||
                 data.status.toLowerCase().includes(searchTerm)
             );
@@ -36,9 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${item.project_code}</td>
                         <td>${item.project_name}</td>
                         <td>${item.company_name}</td>
-                        <td>${item.pic_name}</td>
-                        <td>${item.email}</td>
-                        <td>${item.telephone_number}</td>
+                        <td>${item.company_email}</td>
+                        <td>${item.company_number}</td>
                         <td>${new Date(item.start_date).toLocaleDateString('id-ID')}</td>
                         <td>${new Date(item.end_date).toLocaleDateString('id-ID')}</td>
                         <td>${item.contract_value}</td>
