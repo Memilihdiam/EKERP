@@ -27,9 +27,18 @@ exports.findAllIndustries = async () => {
 }
 
 exports.addClients = async (clientData, connection = pool) => {
-    const { client_code, company_name, industry_id, pic_name, email, telephone_number, address, status } = clientData;
+    const { client_code, company_name, industry_id, email, telephone_number, address, status } = clientData; // email is company_email
+    const [result] = await connection.execute(
+        'INSERT INTO clients (client_code, company_name, industry_id, company_email, company_number, address, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [client_code, company_name, industry_id, email, telephone_number, address, status]
+    );
+    return result;
+}
+
+exports.addPicClient = async (picData, clientId, connection = pool) => {
+    const { name, email, phone, whatsapp_number, status } = picData;
     await connection.execute(
-        'INSERT INTO clients (client_code, company_name, industry_id, company_email, company_number, address, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [client_code, company_name, industry_id, pic_name, email, telephone_number, address, status]
-    )
+        'INSERT INTO client_contacts (client_id, name, email, phone, whatsapp_number, status) VALUES (?, ?, ?, ?, ?, ?)',
+        [clientId, name, email, phone, whatsapp_number, status || 'ACTIVE']
+    );
 }

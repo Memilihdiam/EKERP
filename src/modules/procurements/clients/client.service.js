@@ -15,7 +15,7 @@ exports.getClientById = async (id) => {
     try{
         const cacheData = await redisClient.get(cachedKey);
         if(cacheData){
-            return { client: JSON.parse(cacheData) };
+            return JSON.parse(cacheData);
         }
 
         const client = await repository.findClientsById(id);
@@ -26,13 +26,11 @@ exports.getClientById = async (id) => {
             throw error;
         }
 
-        if(!pic){
-            return {client, pic: []};
+        const result = {
+            client, pic: pic || []
         }
-
-        const dataToCache = { client, pic };
-        await redisClient.set(cachedKey, JSON.stringify(dataToCache), 'EX', cachedEx);
-        return { client, pic };
+        await redisClient.set(cachedKey, JSON.stringify(result), 'EX', cachedEx);
+        return result;
     }catch(err){
         throw err;
     }
@@ -85,7 +83,42 @@ exports.getIndustries = async () => {
 }
 
 exports.addClients = async (clientsData) => {
-    if(!clientsData){
+    const { pics, ...clientInfo } = clientsData;
+
+    if(!clientInfo){
+        const error = new Error("Field Can't Be Null");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+
+    let connection;
+    try{
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        const result = await repository.addClients(clientInfo, connection);
+        const clientId = result.insertId;
+
+        if (pics && pics.length > 0) {
+            for (const pic of pics) {
+                await repository.addPicClient(pic, clientId, connection);
+            }
+        }
+
+        await connection.commit();
+        await redisClient.del('all-clients');
+    }catch(err){
+        if(connection) await connection.rollback();
+        throw err;
+    }finally{
+        if(connection) connection.release();
+    }
+}
+
+exports.addPicClients = async(data) => {
+    const picData = data;
+
+    if(!picData){
         const error = new Error("Field Can't Be Null");
         error.statusCode = httpStatus.badRequest;
         throw error;
@@ -95,11 +128,15 @@ exports.addClients = async (clientsData) => {
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
-        await repository.addClients(clientsData);
+        const clientId = picData.clientId;
+        await repository.addPicClient(picData, clientId, connection);
 
-        connection.commit();
-        await redisClient.del('all-clients');
+        await connection.commit();
+        await redisClient.del(`client:${clientId}`);
     }catch(err){
+        if(connection) await connection.rollback();
         throw err;
+    }finally{
+        if(connection) connection.release();
     }
 }

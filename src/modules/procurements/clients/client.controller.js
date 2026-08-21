@@ -9,7 +9,8 @@ exports.findClientById = async (req, res) => {
         res.status(httpStatus.ok).json({
             success: true,
             message: 'Successfuly Fetch Data',
-            data: {client, pic}
+            client,
+            pic
         })
     }catch(err){
         console.log('Error while fetch client detail, ', err);
@@ -67,6 +68,24 @@ exports.addClients = async (req, res) => {
         })
     }catch(err){
         console.log('Error while created clients, ', err);
+        return res.status(err.statusCode || httpStatus.internalServerError).json({
+            success: false,
+            message: err.message || 'Internal Server Error'
+        })
+    }
+}
+
+exports.addPicClient = async (req, res) => {
+    const picData = req.body;
+    try{
+        await service.addPicClients(picData);
+
+        res.status(httpStatus.created).json({
+            success: true,
+            message: 'Successfuly Created Data'
+        })
+    }catch(err){
+        console.log('Error while created pic, ', err);
         return res.status(err.statusCode || httpStatus.internalServerError).json({
             success: false,
             message: err.message || 'Internal Server Error'

@@ -7,12 +7,7 @@ export async function fetchAllClientsData(){
 
 export async function fetchClientData(id){
     const response = await get(apiEndpoints.detailClient(id));
-    return response.data.client;
-}
-
-export async function fetchPicData(id){
-    const response = await get(apiEndpoints.detailClient(id));
-    return response.data.pic;
+    return {client: response.client, pic: response.pic};
 }
 
 export async function fetchIndustriesData(){

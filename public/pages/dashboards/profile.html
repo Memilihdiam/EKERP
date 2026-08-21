@@ -7,17 +7,88 @@
     <link rel="shortcut icon" href="/assets/images/company_icon.jpg" type="image/x-icon">
     <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .w-150{
+            width:130px;
+        }
+        .w-10{
+            width:100%;
+        }
+        .h-20{
+            height:80px;
+        }
+        .btn{
+            background:transparent;
+            border:none;
+        }
+        #card{
+            background:#ebebeb;
+        }
+        .btn.active {
+            background: #ececec;
+            color: black;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="d-flex">
         <div id="sidebar-display"></div>
         <div class="flex-grow-1">
             <div id="header-display"></div>
-            <main class="p-3"></main>
+            <main class="d-flex">
+                <div class="p-2 flex-grow-1 d-flex justify-content-center">
+                    <div id="over-review" class="m-4 p-2">
+                        <div id="info-display" class="d-flex p-3 shadow">
+                            <div id="photo-profile-display" class="d-flex justify-content-center align-items-center"></div>
+                            <div id="user-display">
+                                <p class="name-display fs-3 fw-bold"></p>
+                                <p id="position-display" class="fw-lighter"></p>
+                            </div>
+                        </div>
+                        <div id="button-container" class="d-flex justify-content-center">
+                            <button class="btn rounded-pill" active>Overview</button>
+                            <button class="btn rounded-pill">History</button>
+                            <button class="btn rounded-pill">Contribution</button>
+                        </div>
+                    </div>
+                    <div id="card" class="m-4 rounded d-flex">
+                        <div class="">
+                            <div class="w-10 h-20 bg-dark"></div>
+                            <div class="p-2">
+                                <p class="name-display fs-5 fw-bold"></p>
+                                <div class="p-2">
+                                    <div class="d-flex">
+                                        <div class="m-1 w-150">
+                                            <p id="work-hours-display" class="fw-bold"></p>
+                                            <p class="fw-lighter">Work Hours</p>
+                                        </div>
+                                        <div class="m-1 w-150">
+                                            <p id="late-minutes-display" class="fw-bold"></p>
+                                            <p class="fw-lighter">Late Minutes</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="m-1 w-150">
+                                            <p id="overtime-display" class="fw-bold"></p>
+                                            <p class="fw-lighter">Overtime Hours</p>
+                                        </div>
+                                        <div class="m-1 w-150">
+                                            <p id="early-leave-minutes-display" class="fw-bold"></p>
+                                            <p class="fw-lighter">Early Leave Minutes</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded"></div>
+            </main>
         </div>
     </div>
     <script type="module" src="/assets/js/layout/sidebar.js"></script>
     <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/modules/hris/users/user.profile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 </body>

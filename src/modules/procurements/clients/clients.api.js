@@ -7,5 +7,6 @@ route.get('/industry', verifyToken, controller.findAllIndustries);
 route.get('/:id', verifyToken, controller.findClientById);
 
 route.post('/', verifyToken, controller.addClients);
+route.post('/pic', verifyToken, controller.addPicClient);
 
 module.exports = route;

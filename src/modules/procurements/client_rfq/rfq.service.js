@@ -25,6 +25,38 @@ exports.findAllRFQ = async () => {
     }
 }
 
+exports.findRfq = async (rfqId) => {
+    if(!rfqId){
+        const error = new Error("Not Found RFQ ID");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+    const cachedKey = `rfq-detail:${rfqId}`;
+    const cachedEx = 3600;
+    try{
+        const cacheData = await redisClient.get(cachedKey);
+        if(cacheData){
+            return JSON.parse(cacheData);
+        }
+
+        const rfq = await repository.fetchRfqById(rfqId);
+        if(!rfq){
+            const error = new Error("Invalid RFQ ID");
+            error.statusCode = httpStatus.notFound;
+            throw error;
+        }
+
+        const rfqItems = await repository.fetchRfqItems(rfqId);
+        
+        const result = {rfq, rfqItems: rfqItems || []};
+
+        await redisClient.set(cachedKey, JSON.stringify(result), 'EX', cachedEx);
+        return result;
+    }catch(err){
+        throw err;
+    }
+}
+
 exports.findRfqClient = async (clientId) => {
     if(!clientId){
         const error = new Error('Not Found client');
@@ -38,32 +70,28 @@ exports.findRfqClient = async (clientId) => {
     try{
         const cacheData = await redisClient.get(cachedKey);
         if(cacheData){
-            return { client_rfq: JSON.parse(cacheData) };
+            return { rfqs: JSON.parse(cacheData) };
         }
 
         const rfqs = await repository.fetchRfqByClient(clientId);
-        if(!rfqs){
-            return { client_rfq: [] };
+        if(rfqs.length === 0){
+            return { rfqs: [] };
         }
 
-        let rfq_items = await repository.fetchRfqItems(rfqs.id);
-        if(rfq_items.length === 0){
-            rfq_items = [];
-        }
-
-        const client_rfq = {rfqs, rfq_items};
-
-        await redisClient.set(cachedKey, JSON.stringify(client_rfq), 'EX', cachedEx);
-        return { client_rfq };
+        await redisClient.set(cachedKey, JSON.stringify(rfqs), 'EX', cachedEx);
+        return { rfqs };
     }catch(err){
         throw err;
     }
 }
 
-exports.addRfq = async (rfqPayload) => {
-    const { rfq, items } = rfqPayload;
+exports.addRfq = async (rfq, items) => {
+    if (!rfq.rfq_number) {
+        const timestamp = new Date().getTime();
+        rfq.rfq_number = `RFQ-${timestamp}`;
+    }
 
-    if(!rfq || !rfq.rfq_number || !rfq.client_id || !rfq.title){
+    if(!rfq.client_id || !rfq.title){
         const error = new Error("RFQ Number, Client, and Title are required");
         error.statusCode = httpStatus.badRequest;
         throw error;
@@ -82,6 +110,7 @@ exports.addRfq = async (rfqPayload) => {
 
         await connection.commit();
         await redisClient.del('all-client-rfq');
+        await redisClient.del(`client-rfq:${rfq.client_id}`);
     }catch(err){
         if(connection) await connection.rollback();
         throw err;

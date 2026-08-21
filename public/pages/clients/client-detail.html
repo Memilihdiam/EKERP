@@ -7,6 +7,37 @@
     <link rel="shortcut icon" href="/assets/images/company_icon.jpg" type="image/x-icon">
     <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        /* Overlay yang meredupkan seluruh halaman */
+        .page-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1050;
+            display: none;
+        }
+
+        /* Tab/modal di tengah */
+        .center-tab {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            z-index: 1060;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-overlay.show,
+        .center-tab.show {
+            display: block;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="d-flex">
@@ -41,26 +72,49 @@
                     <div class="card-body">
                         <div class="tab-content" id="client-tabs-content">
                             <div class="tab-pane fade show active" id="pic" role="tabpanel" aria-labelledby="pic-tab">
-                                <h5 class="card-title">Client Pic</h5>
+                                <div class="d-flex border-bottom">
+                                    <h5 class="card-title">Client Pic</h5>
+                                    <button id="pic-adding" class="btn" style="height:25px;">+</button>
+                                </div>
                                 <div id="pic-details"></div>
                             </div>
                             <div class="tab-pane fade" id="rfq" role="tabpanel" aria-labelledby="rfq-tab">
-                                <h5 class="card-title">Client RFQs</h5>
+                                <div class="d-flex border-bottom">
+                                    <h5 class="card-title">Client RFQs</h5>
+                                    <button id="rfq-adding" class="btn" style="height:25px">+</button>
+                                </div>
                                 <div id="rfq-details"></div>
                             </div>
                             <div class="tab-pane fade" id="invoice" role="tabpanel" aria-labelledby="invoice-tab">
-                                <h5 class="card-title">Client Invoces</h5>
+                                <div class="d-flex border-bottom">
+                                    <h5 class="card-title">Client Invoces</h5>
+                                    <button id="invoice-adding" class="btn" stye="height:25px">+</button>
+                                </div>
                                 <div id="invoice-details"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </main>
+            <!-- Overlay -->
+            <div class="page-overlay" id="pageOverlay"></div>
+
+
+            <!-- Tab di tengah -->
+            <div class="center-tab" id="adding-tab">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Add Person In Charge</h4>
+                    <button type="button" class="btn-close" id="closeTab"></button>
+                </div>
+                <hr>
+                <div id="tab-content"></div>
+            </div>
         </div>
     </div>
     <script type="module" src="/assets/js/layout/sidebar.js"></script>
     <script type="module" src="/assets/js/layout/nav.js"></script>
     <script type="module" src="/assets/js/modules/procurements/clients/client.detail.js"></script>
+    <script type="module" src="/assets/js/modules/procurements/clients/rfq.add.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 </body>

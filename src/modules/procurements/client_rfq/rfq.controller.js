@@ -19,15 +19,35 @@ exports.findAllRFQ = async (req, res) => {
     }
 }
 
-exports.findRfqClient = async (req, res) => {
+exports.findRfq = async (req, res) => {
     const { id } = req.params;
     try{
-        const { client_rfq } = await service.findRfqClient(id);
+        const {rfq, rfqItems} = await service.findRfq(id);
 
         res.status(httpStatus.ok).json({
             success: true,
             message: 'Successfuly Fetch Data',
-            client_rfq
+            rfq,
+            rfqItems
+        })
+    }catch(err){
+        console.log('Error while fetch rfq detail, ', err);
+        return res.status(err.statusCode || httpStatus.internalServerError).json({
+            success: false,
+            message: err.message || 'Internal Server Error'
+        })
+    }
+}
+
+exports.findRfqClient = async (req, res) => {
+    const { id } = req.params;
+    try{
+        const { rfqs } = await service.findRfqClient(id);
+
+        res.status(httpStatus.ok).json({
+            success: true,
+            message: 'Successfuly Fetch Data',
+            rfqs
         })
     }catch(err){
         console.log('Error while fetch rfq client, ', err);
@@ -40,12 +60,16 @@ exports.findRfqClient = async (req, res) => {
 
 exports.addRfq = async (req, res) => {
     const { id: userId } = req.user;
-    const { rfq, items } = req.body;
+    const { rfq, items } = req.body; // rfq is an object, items is an array
 
+    if (!rfq) {
+        return res.status(httpStatus.badRequest).json({ success: false, message: 'RFQ data is missing.' });
+    }
+    
     rfq.created_by = userId;
 
     try{
-        await service.addRfq({ rfq, items });
+        await service.addRfq(rfq, items);
         res.status(httpStatus.created).json({
             success: true,
             message: 'RFQ created successfully'
