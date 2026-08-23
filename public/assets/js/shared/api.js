@@ -1,5 +1,6 @@
 export const apiEndpoints = {
     login: '/api/users',
+    session: '/api/auth/session',
     user: '/api/users/me',
     allProject: '/api/projects',
     detailProject: (id) => `/api/projects/${id}`,

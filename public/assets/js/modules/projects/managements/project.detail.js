@@ -1,5 +1,5 @@
 import { fetchProjectId } from "./project.data.js";
-import { handleAuthError } from "../../../shared/auth.js";
+import { handleAuthError } from "../../../shared/handleError.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const projectDetailContent = document.getElementById('project-detail-content');

@@ -1,5 +1,5 @@
 import { fetchUserData } from "../modules/hris/users/user.data.js";
-import { handleAuthError } from "../shared/auth.js";
+import { handleAuthError } from "../shared/handleError.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const header_display = document.getElementById('header-display');

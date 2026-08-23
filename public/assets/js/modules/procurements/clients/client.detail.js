@@ -1,6 +1,7 @@
 import { fetchClientData } from "./client.data.js";
 import { fetchClientRfqs } from "./rfq.data.js";
 import { apiEndpoints, post } from "../../../shared/api.js";
+import { handleAuthError } from "../../../shared/handleError.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const clientDetail = document.getElementById('client-detail-content');

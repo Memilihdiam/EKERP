@@ -1,6 +1,6 @@
 import { get, post, apiEndpoints } from "../../../shared/api.js";
 import { fetchIndustriesData } from "./client.data.js";
-import { handleAuthError } from "../../../shared/auth.js";
+import { handleAuthError } from "../../../shared/handleError.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const addForm = document.getElementById('add-form');

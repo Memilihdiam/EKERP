@@ -95,10 +95,57 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="col-md-6">
                         <select class="item-unit form-control" required>
                             <option value="">Select Item Measure Unit</option>
+
+                            <!-- Count / Individual -->
+                            <option value="pcs">Pieces (pcs)</option>
+                            <option value="unit">Unit</option>
+                            <option value="set">Set</option>
+                            <option value="pair">Pair</option>
+                            <option value="dozen">Dozen</option>
+
+                            <!-- Packaging -->
                             <option value="box">Box</option>
-                            <option value="pcs">pcs</option>
-                            <option value="kg">kg</option>
-                            <option value="l">Liter</option>
+                            <option value="pack">Pack</option>
+                            <option value="bag">Bag</option>
+                            <option value="bottle">Bottle</option>
+                            <option value="can">Can</option>
+                            <option value="carton">Carton</option>
+                            <option value="case">Case</option>
+                            <option value="bundle">Bundle</option>
+                            <option value="roll">Roll</option>
+                            <option value="reel">Reel</option>
+                            <option value="tube">Tube</option>
+                            <option value="sack">Sack</option>
+                            <option value="pail">Pail</option>
+                            <option value="drum">Drum</option>
+
+                            <!-- Weight -->
+                            <option value="mg">Milligram (mg)</option>
+                            <option value="g">Gram (g)</option>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="ton">Metric Ton (ton)</option>
+
+                            <!-- Volume -->
+                            <option value="ml">Milliliter (ml)</option>
+                            <option value="l">Liter (L)</option>
+                            <option value="m3">Cubic Meter (m³)</option>
+
+                            <!-- Length -->
+                            <option value="mm">Millimeter (mm)</option>
+                            <option value="cm">Centimeter (cm)</option>
+                            <option value="m">Meter (m)</option>
+                            <option value="km">Kilometer (km)</option>
+
+                            <!-- Area -->
+                            <option value="m2">Square Meter (m²)</option>
+
+                            <!-- Other -->
+                            <option value="sheet">Sheet</option>
+                            <option value="ream">Ream</option>
+                            <option value="pair">Pair</option>
+                            <option value="lot">Lot</option>
+                            <option value="job">Job</option>
+                            <option value="service">Service</option>
                         </select>
                     </div>
                 </div>
