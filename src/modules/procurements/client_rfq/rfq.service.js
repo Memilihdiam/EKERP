@@ -1,7 +1,9 @@
 const pool = require('../../../config/db');
 const redisClient = require('../../../config/redis');
-const { httpStatus } = require('../../../utils/util');
+const { letterCode } = require('../../../utils/code-generator');
+const { httpStatus, typeLetter } = require('../../../utils/util');
 const repository = require('./rfq.repository');
+const letterService = require('../../cores/letter/letter.service');
 
 exports.findAllRFQ = async () => {
     const cachedKey = 'all-client-rfq';
@@ -86,27 +88,34 @@ exports.findRfqClient = async (clientId) => {
 }
 
 exports.addRfq = async (rfq, items) => {
-    if (!rfq.rfq_number) {
-        const timestamp = new Date().getTime();
-        rfq.rfq_number = `RFQ-${timestamp}`;
-    }
-
+    const month = new Date().getMonth() + 1;
+    const year = new Date().getFullYear();
+    const type = typeLetter.spb;
+    
     if(!rfq.client_id || !rfq.title){
         const error = new Error("RFQ Number, Client, and Title are required");
         error.statusCode = httpStatus.badRequest;
         throw error;
     }
-
+    
     let connection;
     try{
         connection = await pool.getConnection();
         await connection.beginTransaction();
+        
+        const sequence = await letterService.letterSequence(type, month, year, connection);
+        if (!rfq.rfq_number) {
+            const code = await letterService.letterCode(type);
+            rfq.rfq_number = await letterCode(code, month, year, sequence);
+        }
 
         const rfqId = await repository.addRfq(rfq, connection);
 
         if(items && items.length > 0){
             await repository.addRfqItems(items, rfqId, connection);
         }
+
+        await letterService.addSequence(type, month, year, sequence + 1, connection);
 
         await connection.commit();
         await redisClient.del('all-client-rfq');

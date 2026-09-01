@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotation Clients</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.ico" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+        }
+
+        /* Styling to simulate A4 paper on screen */
+        .a4-paper {
+            background: white;
+            max-width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* A4 height */
+            margin: 2rem auto;
+            padding: 2.5rem;
+            /* ~1 inch margin */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-justify {
+            text-align: justify;
+        }
+
+        /* Table styling refinements */
+        .table-quotation th {
+            background-color: #f1f1f1 !important;
+            /* Force background color for print */
+            vertical-align: middle;
+        }
+
+        .table-quotation td {
+            vertical-align: top;
+        }
+
+        .summary-label {
+            text-align: right;
+            font-weight: bold;
+            padding-right: 15px !important;
+            border: none !important;
+        }
+
+        .summary-value {
+            text-align: right;
+            border-left: 1px solid #dee2e6;
+        }
+
+        /* Print specific styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .a4-paper {
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                width: 100%;
+                max-width: none;
+                min-height: auto;
+            }
+
+            /* Hide print button when printing */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Ensure table background colors are printed */
+            .table-quotation th {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="d-flex">
+        <div id="sidebar-display"></div>
+        <div class="flex-grow-1">
+            <div id="header-display"></div>
+            <main class="p-2">
+                <!-- Action buttons for user -->
+                <div class="text-center mt-4 mb-2 no-print">
+                    <button id="btn-print" class="btn btn-primary px-4 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-printer me-2" viewBox="0 0 16 16">
+                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                            <path
+                                d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z" />
+                        </svg>
+                        Print Quotation
+                    </button>
+                </div>
+
+                <!-- Main Document Container -->
+                <div class="a4-paper" id="printable-area">
+                    <div id="header-paper">
+                        <div class="d-flex">
+                            <div class="d-flex">
+                                <img src="/assets/images/company_logo.png" alt="" height="80" width="80">
+                                <div class="p-2">
+                                    <h1 class="fs-3 fw-bold">PT. WICITRA</h1>
+                                    <h3 class="fs-5 fw-bold">KARSA MANGGALA</h3>
+                                </div>
+                            </div>
+                            <div class="p-2 text-center">
+                                <h1 class="fs-4 fw-bold">PT. WICITRA KARSA MANGGALA</h1>
+                                <p class="fw-bold">
+                                    Jl. Swasembada Timur XVII No.11
+                                    Kel. Kebon Bawang, Tg Priok, Jakarta Utara 14320 <br>
+                                    Email : wicitrakarsamanggala@gmail.com Telp. 085771600194
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <!-- Document Title -->
+                    <h3 id="quot-title" class="text-center text-uppercase fw-bold mb-4" style="letter-spacing: 2px;">
+                        QUOTATION</h3>
+
+                    <!-- Meta Info (Number, Date) -->
+                    <div class="row mb-4">
+                        <div class="col-8">
+                            <table class="table table-borderless table-sm mb-0 p-0" style="width: auto;">
+                                <tr>
+                                    <td class="p-0 pe-2 pb-1"><strong>No</strong></td>
+                                    <td class="p-0 pb-1">: <span id="quot-number"></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-0 pe-2"><strong>Attachment</strong></td>
+                                    <td class="p-0">: -</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div id="quot-date-place"></div>
+                        </div>
+                    </div>
+
+                    <!-- Addressee / Client Info -->
+                    <div class="mb-4">
+                        <div><strong>Dear :</strong></div>
+                        <div id="client-name" class="fw-bold fs-6 mt-1"></div>
+                        <div id="client-address" style="max-width: 300px; white-space: pre-wrap;"></div>
+                    </div>
+
+                    <!-- Opening Text -->
+                    <p class="text-justify mb-4">
+                        In connection with the procurement needs of <span id="client-name-body" class="fw-bold"></span>,
+                        we, from PT Wicitra Karsa Manggala, would like to submit a price quotation. We have compiled
+                        this quotation based on technical specifications and a delivery schedule to support your smooth
+                        operations. The details of our quotation are as follows:
+                    </p>
+
+                    <!-- Quotation Items Table -->
+                    <table class="table table-bordered table-quotation mb-4 border-dark">
+                        <thead class="text-center fw-bold text-uppercase">
+                            <tr>
+                                <th width="5%">No.</th>
+                                <th width="35%">DESCRIPTION</th>
+                                <th width="10%">QTY</th>
+                                <th width="10%">UNIT</th>
+                                <th width="20%">UNIT PRICE</th>
+                                <th width="20%">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotation-items-body">
+                            <!-- Data will be injected here via JS -->
+                        </tbody>
+                        <tfoot>
+                            <!-- Calculations -->
+                            <tr>
+                                <td colspan="4" class="summary-label">Subtotal</td>
+                                <td colspan="2" class="summary-value" id="quot-subtotal"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="summary-label">Discount</td>
+                                <td colspan="2" class="summary-value text-danger" id="quot-discount"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="summary-label">Tax</td>
+                                <td colspan="2" class="summary-value" id="quot-tax"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="summary-label">Shipping</td>
+                                <td colspan="2" class="summary-value" id="quot-shipping"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="summary-label border-bottom border-dark"
+                                    style="font-size: 1.1em;">GRAND TOTAL</td>
+                                <td colspan="2" class="summary-value fw-bold border-bottom border-dark"
+                                    id="quot-grand-total" style="font-size: 1.1em;"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Specifications -->
+                    <div class="mb-4">
+                        <p class="mb-1 fw-bold">The completeness of each item consists of :</p>
+                        <div id="item-specifications"
+                            class="ms-3 ps-2 border-start border-3 border-secondary text-muted text-justify">
+                            <!-- Specs injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-1">Payment Terms</h6>
+                        <p id="payment-terms-text" class="text-justify mb-3"></p>
+
+                        <h6 class="fw-bold mb-1">Delivery Terms</h6>
+                        <p id="delivery-terms-text" class="text-justify"></p>
+                    </div>
+
+                    <!-- Closing Text -->
+                    <p class="text-justify mb-5">
+                        We hereby submit this offer letter. The subsequent stages and processes will be determined and
+                        established through a Work Agreement, which will serve as the basis for binding and implementing
+                        the collaboration between the two parties. We are fully committed to following up on the process
+                        in accordance with the provisions. Thank you for your attention and the opportunity given.
+                    </p>
+
+                    <!-- Signature Section -->
+                    <div class="row mt-5">
+                        <div class="col-7"></div>
+                        <div class="col-5 text-center">
+                            <p class="mb-5">Best regards,<br><strong class="fs-6">PT Wicitra Karsa Manggala</strong></p>
+                            <br>
+                            <p class="mb-0 text-decoration-underline fw-bold" id="directure-name"></p>
+                            <p class="text-muted">Direktur</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/layout/sidebar.js"></script>
+    <script type="module" src="/assets/js/modules/procurements/client.quotations/quotation.detail.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</body>
+</html>

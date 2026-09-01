@@ -2,6 +2,7 @@ export const apiEndpoints = {
     login: '/api/users',
     session: '/api/auth/session',
     user: '/api/users/me',
+    industries: '/api/clients/industry',
     allProject: '/api/projects',
     detailProject: (id) => `/api/projects/${id}`,
     clients: '/api/clients',
@@ -10,7 +11,9 @@ export const apiEndpoints = {
     rfqsClients: '/api/crfqs',
     rfqsClientDetail: (id) => `/api/crfqs/detail/${id}`,
     rfqsClient: (id) => `/api/crfqs/${id}`,
-    industries: '/api/clients/industry'
+    quotation: '/api/cquots',
+    quotationDetail: (id) => `/api/cquots/${id}`,
+    quotationClient: (id) => `/api/cquots/client/${id}`,
 }
 
 async function get(url){

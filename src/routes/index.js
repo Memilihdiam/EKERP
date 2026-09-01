@@ -5,11 +5,13 @@ const users = require('../modules/hris/users/user.api');
 const projects = require('../modules/projects/managements/management.api');
 const clients = require('../modules/procurements/clients/clients.api');
 const crfqs = require('../modules/procurements/client_rfq/rfq.api');
+const cquots = require('../modules/procurements/client_quotation/quotation.api.js');
 
 route.use('/auth', auth);
 route.use('/users', users);
 route.use('/projects', projects);
 route.use('/clients', clients);
 route.use('/crfqs', crfqs );
+route.use('/cquots', cquots);
 
 module.exports = route;

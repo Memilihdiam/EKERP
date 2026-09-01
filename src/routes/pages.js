@@ -13,4 +13,8 @@ route.get('/clients/rfq-detail/:id', (req, res) => {
     res.sendFile(path.join(__dirname, '../../public/pages/clients/rfq-detail.html'));
 });
 
+route.get('/clients/quotation-detail/:id', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../public/pages/clients/quotation-detail.html'));
+})
+
 module.exports = route;

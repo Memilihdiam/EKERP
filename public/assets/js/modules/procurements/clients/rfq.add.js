@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeTab = document.getElementById("closeTab");
     const overlay = document.getElementById("pageOverlay");
     const tab = document.getElementById("adding-tab");
+    const tabTitle = document.getElementById('tab-title');
     const tabContent = document.getElementById('tab-content');
 
     const getClientIdFromUrl = () => {
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rfqAdding.addEventListener('click', function (){
         overlay.classList.add('show');
         tab.classList.add('show');
+        tabTitle.textContent = 'Adding Rfq Client'
         const today = new Date().toLocaleDateString('en-CA');
         tabContent.innerHTML = `
             <div class="m-1">
@@ -32,9 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="row m-2">
                     <div class="col-md-6">
+                        <label>Created</label>
                         <input type="date" class="form-control" id="rfq-date" placeholder="RFQ Date" value="${today}" required>
                     </div>
                     <div class="col-md-6">
+                        <label>Deadline</label>
                         <input type="date" class="form-control" id="rfq-deadline" placeholder="RFQ Deadline" required>
                     </div>
                 </div>

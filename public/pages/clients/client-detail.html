@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client</title>
-    <link rel="shortcut icon" href="/assets/images/company_icon.jpg" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets/images/company_icon.ico" type="image/x-icon">
     <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
     <style>
@@ -25,11 +25,13 @@
             transform: translate(-50%, -50%);
             width: 90%;
             max-width: 500px;
+            /* max-height:90vh; */
             background: white;
             border-radius: 12px;
             padding: 25px;
             z-index: 1060;
             display: none;
+            /* overflow-y:auto; */
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
@@ -65,6 +67,9 @@
                                 <button type="button" class="nav-link" id="rfq-tab" data-bs-toggle="tab" data-bs-target="#rfq" role="tab" aria-controls="rfq" aria-selected="false">Request of Quotation</button>
                             </li>
                             <li class="nav-item" role="presentation">
+                                <button type="button" class="nav-link" id="quot-tab" data-bs-toggle="tab" data-bs-target="#quot" role="tab" aria-controls="quot" aria-selected="false">Quotation</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
                                 <button type="button" class="nav-link" id="invoice-tab" data-bs-toggle="tab" data-bs-target="#invoice" role="tab" aria-controls="invoice" aria-selected="false">Invoice</button>
                             </li>
                         </ul>
@@ -85,6 +90,13 @@
                                 </div>
                                 <div id="rfq-details"></div>
                             </div>
+                            <div class="tab-pane fade" id="quot" role="tabpanel" aria-labelledby="quot-tab">
+                                <div class="d-flex border-bottom">
+                                    <h5 class="card-title">Client Quotations</h5>
+                                    <button id="quot-adding" class="btn" style="height:25px">+</button>
+                                </div>
+                                <div id="quot-details"></div>
+                            </div>
                             <div class="tab-pane fade" id="invoice" role="tabpanel" aria-labelledby="invoice-tab">
                                 <div class="d-flex border-bottom">
                                     <h5 class="card-title">Client Invoces</h5>
@@ -99,15 +111,14 @@
             <!-- Overlay -->
             <div class="page-overlay" id="pageOverlay"></div>
 
-
             <!-- Tab di tengah -->
             <div class="center-tab" id="adding-tab">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="mb-0">Add Person In Charge</h4>
+                    <h4 class="mb-0" id="tab-title"></h4>
                     <button type="button" class="btn-close" id="closeTab"></button>
                 </div>
                 <hr>
-                <div id="tab-content"></div>
+                <div id="tab-content" style="max-height:80vh; overflow-y:auto;"></div>
             </div>
         </div>
     </div>
@@ -116,6 +127,7 @@
     <script type="module" src="/assets/js/layout/nav.js"></script>
     <script type="module" src="/assets/js/modules/procurements/clients/client.detail.js"></script>
     <script type="module" src="/assets/js/modules/procurements/clients/rfq.add.js"></script>
+    <script type="module" src="/assets/js/modules/procurements/client.quotations/quotation.add.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
 </body>

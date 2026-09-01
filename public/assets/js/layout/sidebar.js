@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebarDisplay.innerHTML = `
             <div id="sidebar-container" class="d-flex border flex-column flex-shrink-0 shadow-sm p-2 vh-100 bg-light" style="width:${sidebarWidth}; overflow-y:auto; transition: width 0.3s ease;">
                 <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
-                    <i class="bi bi-box fs-3 ms-2"></i> <!-- Icon default untuk Brand saat collapse -->
+                    <img src="/assets/images/company_logo.png" height="45" width="45"></img> <!-- Icon default untuk Brand saat collapse -->
                     <span class="fs-4 sidebar-text ${textDisplayClass} ms-2 fw-bold">WKM</span>
                 </a>
                 <hr>

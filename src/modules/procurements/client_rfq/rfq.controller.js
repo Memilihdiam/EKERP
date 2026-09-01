@@ -60,7 +60,7 @@ exports.findRfqClient = async (req, res) => {
 
 exports.addRfq = async (req, res) => {
     const { id: userId } = req.user;
-    const { rfq, items } = req.body; // rfq is an object, items is an array
+    const { rfq, items } = req.body;
 
     if (!rfq) {
         return res.status(httpStatus.badRequest).json({ success: false, message: 'RFQ data is missing.' });

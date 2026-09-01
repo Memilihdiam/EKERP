@@ -1,6 +1,71 @@
 # EKERP
 Enterprise Resource Planning
 
+# COMPANY
+Company run a procurement business workflow
+## Company Structure
+### Departments Structure
+```bash
+| Department                | Code |
+| ------------------------- | ---- |
+| Management                | MG   |
+| Procurement               | PR   |
+| Sales                     | SL   |
+| Business Development      | BD   |
+| Tender                    | TD   |
+| Project Management        | PM   |
+| Operations                | OP   |
+| Logistics                 | LG   |
+| Warehouse                 | WH   |
+| Supply Chain              | SC   |
+| Finance                   | FN   |
+| Accounting                | AC   |
+| Finance & Accounting      | FA   |
+| Human Resources           | HR   |
+| General Affairs           | GA   |
+| HR & GA                   | HG   |
+| Legal                     | LE   |
+| Compliance                | CP   |
+| Quality Assurance         | QA   |
+| Quality Control           | QC   |
+| Information Technology    | IT   |
+| Customer Service          | CS   |
+| Health Safety Environment | HS   |
+```
+
+### Positions Structure
+```bash
+| Position          | Code | Level |
+| ----------------- |:----:|:-----:|
+| Director          | DR   | 1     |
+| General Manager   | GM   | 2     |
+| Manager           | MG   | 3     |
+| Assistant Manager | AM   | 4     |
+| Supervisor        | SP   | 5     |
+| Team Leader       | TL   | 6     |
+| Coordinator       | CO   | 6     |
+| Senior Staff      | SS   | 7     |
+| Specialist        | SC   | 7     |
+| Analyst           | AN   | 7     |
+| Staff             | ST   | 8     |
+| Officer           | OF   | 8     |
+| Administrator     | AD   | 8     |
+| Technician        | TC   | 8     |
+| Operator          | OP   | 8     |
+| Inspector         | IN   | 8     |
+| Recruiter         | RC   | 8     |
+| Accountant        | AC   | 8     |
+| Storekeeper       | SK   | 8     |
+| Junior Staff      | JS   | 9     |
+| Intern            | IT   | 9     |
+| Trainee           | TR   | 9     |
+
+```
+
+# SYSTEM DESIGN
+## Module
+### Human Resource Information System
+
 
 # PREPARATION
 ## Create Database
@@ -146,6 +211,119 @@ CREATE TABLE employee_employment_status (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
+**TABLE: roles**
+```sql
+CREATE TABLE roles (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+
+**TABLE: permissions**
+```sql
+CREATE TABLE permissions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    module_name VARCHAR(50) NOT NULL, -- cth: 'Vendor', 'Procurement', 'HR'
+    action VARCHAR(50) NOT NULL,
+    permission_name VARCHAR(100) NOT NULL UNIQUE, -- cth: 'create_po', 'approve_payroll'
+    description VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: employee_roles**
+```sql
+CREATE TABLE employee_roles (
+    employee_id BIGINT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (employee_id, role_id),
+    CONSTRAINT fk_er_employee FOREIGN KEY (employee_id) REFERENCES employees(id) ON DELETE CASCADE,
+    CONSTRAINT fk_er_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: role_permissions**
+```sql
+CREATE TABLE role_permissions (
+    role_id INT NOT NULL,
+    permission_id INT NOT NULL,
+    PRIMARY KEY (role_id, permission_id),
+    CONSTRAINT fk_rp_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+    CONSTRAINT fk_rp_permission FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: attendance**
+```sql
+CREATE TABLE attendance (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    employee_id BIGINT NOT NULL,
+    attendance_date DATE NOT NULL,
+
+    check_in TIME NULL,
+    check_out TIME NULL,
+
+    late_minutes INT DEFAULT 0,
+    early_leave_minutes INT DEFAULT 0,
+
+    status ENUM(
+        'Hadir',
+        'Izin',
+        'Sakit',
+        'Alpha',
+        'Libur'
+    ) DEFAULT 'Alpha',
+
+    work_hours DECIMAL(5,2) DEFAULT 0,
+    overtime_hours DECIMAL(5,2) DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_attendance_employee (employee_id),
+
+    UNIQUE KEY uk_attendance_employee_date (
+        employee_id,
+        attendance_date
+    ),
+
+    CONSTRAINT fk_attendance_employee
+        FOREIGN KEY (employee_id)
+        REFERENCES employees(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: type_letter**
+```sql
+CREATE type_letter (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    letter_type VARCHAR(50) NOT NULL,
+    letter_code VARCHAR(3) UNIQUE NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: sequence_of_letter**
+```sql
+CREATE sequence_of_letter (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    type_letter VARCHAR(3) NOT NULL,
+    month_period TINYINT NOT NULL,
+    year_period YEAR NOT NULL,
+    sequence INT NOT NULL,
+
+    CONSTRAINT fk_type_letter
+        FOREIGN KEY (type_letter)
+        REFERENCES type_letter(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
 ### Finance
 **TABLE: invoices**
 ```sql
@@ -228,6 +406,147 @@ CREATE TABLE transactions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
+**TABLE: deduction**
+```sql
+CREATE TABLE deduction (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    employee_id BIGINT,
+    name_deduction VARCHAR(100) NOT NULL,
+    deduction_value BIGINT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_employee_deduction FOREIGN KEY (employee_id) REFERENCES employees (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: payroll**
+```sql
+CREATE TABLE payroll (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    employee_id BIGINT NOT NULL,
+
+    payroll_month TINYINT NOT NULL,
+    payroll_year YEAR NOT NULL,
+
+    basic_salary BIGINT DEFAULT 0,
+    allowance BIGINT DEFAULT 0,
+    bonus BIGINT DEFAULT 0,
+    overtime_pay BIGINT DEFAULT 0,
+    deduction BIGINT DEFAULT 0,
+    tax BIGINT DEFAULT 0,
+    bpjs BIGINT DEFAULT 0,
+
+    total_salary BIGINT NOT NULL,
+
+    payment_date DATE,
+
+    generated_by BIGINT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_payroll_employee (employee_id),
+    INDEX idx_payroll_generated_by (generated_by),
+
+    UNIQUE KEY uk_payroll_period (
+        employee_id,
+        payroll_month,
+        payroll_year
+    ),
+
+    CONSTRAINT fk_payroll_employee
+        FOREIGN KEY (employee_id)
+        REFERENCES employees(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_payroll_generated_by
+        FOREIGN KEY (generated_by)
+        REFERENCES employees(id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: payment_status**
+```sql
+CREATE TABLE payment_status (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    status_name VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: chart_of_account**
+```sql
+CREATE TABLE chart_of_accounts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    account_code VARCHAR(20) NOT NULL UNIQUE, -- cth: '1100' untuk Kas Bank, '4100' untuk Pendapatan
+    account_name VARCHAR(100) NOT NULL,
+    account_type ENUM('ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE') NOT NULL,
+    description TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    INDEX idx_coa_type (account_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: journal_entries**
+```sql
+CREATE TABLE journal_entries (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    entry_number VARCHAR(50) NOT NULL UNIQUE, -- Nomor Bukti Jurnal
+    entry_date DATE NOT NULL,
+    reference_type VARCHAR(50) NULL, -- cth: 'INVOICE', 'BILL', 'PAYROLL'
+    reference_id BIGINT NULL,
+    description TEXT,
+    created_by BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    INDEX idx_journal_date (entry_date),
+    CONSTRAINT fk_journal_created_by FOREIGN KEY (created_by) REFERENCES employees(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: journal_entry_lines**
+```sql
+CREATE TABLE journal_entry_lines (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    journal_entry_id BIGINT NOT NULL,
+    account_id INT NOT NULL,
+    debit BIGINT DEFAULT 0,
+    credit BIGINT DEFAULT 0,
+    description VARCHAR(255),
+    
+    CONSTRAINT fk_jel_journal FOREIGN KEY (journal_entry_id) REFERENCES journal_entries(id) ON DELETE CASCADE,
+    CONSTRAINT fk_jel_account FOREIGN KEY (account_id) REFERENCES chart_of_accounts(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: vendor_bills**
+```sql
+CREATE TABLE vendor_bills (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    bill_number VARCHAR(50) NOT NULL UNIQUE, -- Nomor Tagihan dari Vendor
+    po_id BIGINT NOT NULL,
+    vendor_id BIGINT NOT NULL,
+    
+    bill_date DATE NOT NULL,
+    due_date DATE NOT NULL,
+    
+    total_amount BIGINT NOT NULL,
+    payment_status ENUM('UNPAID', 'PARTIAL', 'PAID') DEFAULT 'UNPAID',
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_bill_po FOREIGN KEY (po_id) REFERENCES purchase_orders(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_bill_vendor FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+### Warehouse
+
 **TABLE: category**
 ```sql
 CREATE TABLE category (
@@ -235,6 +554,26 @@ CREATE TABLE category (
     name VARCHAR(100) NOT NULL,
     category_code VARCHAR(50) NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: warehouse**
+```sql
+CREATE TABLE warehouses (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    warehouse_code VARCHAR(20) UNIQUE,
+
+    warehouse_name VARCHAR(100) NOT NULL,
+
+    address TEXT,
+
+    manager_id BIGINT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (manager_id)
+        REFERENCES employees(id)
+);
 ```
 
 **TABLE: items**
@@ -257,6 +596,129 @@ CREATE TABLE items (
     CONSTRAINT fk_ct_category FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
+
+
+**TABLE: goods_receipts**
+```sql
+CREATE TABLE goods_receipts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    po_id BIGINT NOT NULL,
+
+    receipt_number VARCHAR(50) NOT NULL UNIQUE,
+
+    receipt_date DATE NOT NULL,
+
+    received_by BIGINT NOT NULL,
+
+    notes TEXT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (po_id)
+        REFERENCES purchase_orders(id),
+
+    FOREIGN KEY (received_by)
+        REFERENCES employees(id)
+);
+```
+
+**TABLE: good_receipt_items**
+```sql
+CREATE TABLE goods_receipt_items (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    goods_receipt_id BIGINT NOT NULL,
+
+    po_item_id BIGINT NOT NULL,
+
+    received_qty INT NOT NULL,
+
+    accepted_qty INT DEFAULT 0,
+
+    rejected_qty INT DEFAULT 0,
+
+    notes TEXT,
+
+    FOREIGN KEY (goods_receipt_id)
+        REFERENCES goods_receipts(id),
+
+    FOREIGN KEY (po_item_id)
+        REFERENCES po_items(id)
+);
+```
+
+**TABLE: inventory_stocks**
+```sql
+CREATE TABLE inventory_stocks (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    warehouse_id BIGINT NOT NULL,
+
+    item_id BIGINT NOT NULL,
+
+    quantity DECIMAL(18,2) DEFAULT 0,
+
+    minimum_stock DECIMAL(18,2) DEFAULT 0,
+
+    maximum_stock DECIMAL(18,2) DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uk_stock (
+        warehouse_id,
+        item_id
+    ),
+
+    FOREIGN KEY (warehouse_id)
+        REFERENCES warehouses(id),
+
+    FOREIGN KEY (item_id)
+        REFERENCES items(id)
+);
+```
+
+**TABLE: stock_movements**
+```sql
+CREATE TABLE stock_movements (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    item_id BIGINT NOT NULL,
+
+    warehouse_id BIGINT NOT NULL,
+
+    movement_type ENUM(
+        'IN',
+        'OUT',
+        'TRANSFER',
+        'ADJUSTMENT'
+    ) NOT NULL,
+
+    quantity DECIMAL(18,2) NOT NULL,
+
+    reference_type VARCHAR(50),
+
+    reference_id BIGINT,
+
+    movement_date DATETIME NOT NULL,
+
+    notes TEXT,
+
+    created_by BIGINT,
+
+    FOREIGN KEY (item_id)
+        REFERENCES items(id),
+
+    FOREIGN KEY (warehouse_id)
+        REFERENCES warehouses(id),
+
+    FOREIGN KEY (created_by)
+        REFERENCES employees(id)
+);
+```
+
+### Procurement
 
 **TABLE: purchase_request**
 ```sql
@@ -383,6 +845,36 @@ CREATE TABLE vendors (
     INDEX idx_vendor_status (status),
     CONSTRAINT fk_vendors_created_by FOREIGN KEY (created_by) REFERENCES employees(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: vendor_evaluations**
+```sql
+CREATE TABLE vendor_evaluations (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    vendor_id BIGINT NOT NULL,
+
+    project_id BIGINT NOT NULL,
+
+    quality_score DECIMAL(5,2),
+    delivery_score DECIMAL(5,2),
+    communication_score DECIMAL(5,2),
+    price_score DECIMAL(5,2),
+    overall_score DECIMAL(5,2),
+
+    notes TEXT,
+    evaluated_by BIGINT NOT NULL,
+    evaluated_at DATETIME NOT NULL,
+
+    FOREIGN KEY (vendor_id)
+        REFERENCES vendors(id),
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(id),
+
+    FOREIGN KEY (evaluated_by)
+        REFERENCES employees(id)
+);
 ```
 
 **TABLE: clients**
@@ -548,11 +1040,14 @@ CREATE TABLE client_rfqs (
         'CANCELLED'
     ) DEFAULT 'DRAFT',
 
+    parent_id BIGINT NOT NULL DEFAULT NULL,
+
     created_by BIGINT NOT NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
+    is_active BOLEAN DEFAULT true
 
     FOREIGN KEY (client_id)
         REFERENCES clients(id)
@@ -561,6 +1056,11 @@ CREATE TABLE client_rfqs (
     FOREIGN KEY (created_by)
         REFERENCES employees(id)
         ON DELETE RESTRICT,
+
+    FOREIGN KEY (parent_id)
+        REFERENCES client_rfqs(id)
+        ON DELETE RESTRICT
+        ON UPDATE RESTRICT
 
     INDEX idx_client_rfq_client (client_id),
     INDEX idx_client_rfq_project (project_id),
@@ -1153,6 +1653,90 @@ CREATE TABLE projects (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
+**TABLE: project_contracts**
+```sql
+CREATE TABLE project_contracts (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    project_id BIGINT NOT NULL,
+
+    contract_number VARCHAR(100) NOT NULL,
+
+    contract_type ENUM(
+        'ORIGINAL',
+        'AMENDMENT',
+        'EXTENSION',
+        'CHANGE_ORDER'
+    ) DEFAULT 'ORIGINAL',
+
+    contract_date DATE NOT NULL,
+
+    start_date DATE,
+    end_date DATE,
+
+    contract_value DECIMAL(18,2) NOT NULL,
+
+    status ENUM(
+        'DRAFT',
+        'SUBMITTED',
+        'APPROVED',
+        'ACTIVE',
+        'CLOSED',
+        'CANCELLED'
+    ) DEFAULT 'DRAFT',
+
+    parent_contract_id BIGINT NULL,
+
+    created_by BIGINT NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(project_id)
+        REFERENCES projects(id),
+
+    FOREIGN KEY(parent_contract_id)
+        REFERENCES project_contracts(id),
+
+    FOREIGN KEY(created_by)
+        REFERENCES employees(id)
+);
+```
+
+**TABLE: project_documents**
+```sql
+CREATE TABLE project_documents (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    project_id BIGINT NOT NULL,
+
+    document_type ENUM(
+        'CONTRACT',
+        'PO',
+        'BAST',
+        'DRAWING',
+        'INVOICE',
+        'PHOTO',
+        'OTHER'
+    ),
+
+    file_name VARCHAR(255),
+
+    file_path TEXT NOT NULL,
+
+    version_no INT DEFAULT 1,
+
+    uploaded_by BIGINT NOT NULL,
+
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(id),
+
+    FOREIGN KEY (uploaded_by)
+        REFERENCES employees(id)
+);
+```
+
 **TABLE: project_budgets**
 ```sql
 CREATE TABLE project_budgets (
@@ -1251,4 +1835,237 @@ CREATE TABLE project_milestones (
 
     FOREIGN KEY (project_id) REFERENCES projects(id)
 );
+```
+
+**TABLE: approvals**
+```sql
+CREATE TABLE approvals (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    reference_type VARCHAR(50) NOT NULL,
+
+    reference_id BIGINT NOT NULL,
+
+    approver_id BIGINT NOT NULL,
+
+    approval_level INT DEFAULT 1,
+
+    status ENUM(
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ) DEFAULT 'PENDING',
+
+    approved_at DATETIME NULL,
+
+    notes TEXT,
+
+    FOREIGN KEY (approver_id)
+        REFERENCES employees(id)
+);
+```
+
+**TABLE: project_risks**
+```sql
+CREATE TABLE project_risks (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    project_id BIGINT NOT NULL,
+
+    risk_name VARCHAR(255) NOT NULL,
+
+    description TEXT,
+
+    probability ENUM(
+        'LOW',
+        'MEDIUM',
+        'HIGH'
+    ),
+
+    impact ENUM(
+        'LOW',
+        'MEDIUM',
+        'HIGH'
+    ),
+
+    mitigation_plan TEXT,
+
+    owner_id BIGINT,
+
+    status ENUM(
+        'OPEN',
+        'MITIGATED',
+        'CLOSED'
+    ) DEFAULT 'OPEN',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(id),
+
+    FOREIGN KEY (owner_id)
+        REFERENCES employees(id)
+);
+```
+
+**TABLE: project_change_requests**
+```sql
+CREATE TABLE project_change_requests (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    project_id BIGINT NOT NULL,
+
+    request_number VARCHAR(50) UNIQUE,
+
+    request_type ENUM(
+        'SCOPE',
+        'BUDGET',
+        'TIMELINE',
+        'RESOURCE'
+    ),
+
+    old_value TEXT,
+    new_value TEXT,
+
+    reason TEXT,
+
+    requested_by BIGINT NOT NULL,
+
+    status ENUM(
+        'PENDING',
+        'APPROVED',
+        'REJECTED'
+    ) DEFAULT 'PENDING',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(id),
+
+    FOREIGN KEY (requested_by)
+        REFERENCES employees(id)
+);
+```
+
+**TABLE: project_costs**
+```sql
+CREATE TABLE project_costs (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    project_id BIGINT NOT NULL,
+
+    source_type ENUM(
+        'PO',
+        'VENDOR_BILL',
+        'PAYROLL',
+        'EXPENSE'
+    ),
+
+    source_id BIGINT NOT NULL,
+
+    cost_category VARCHAR(100),
+
+    amount DECIMAL(18,2) NOT NULL,
+
+    transaction_date DATE NOT NULL,
+
+    notes TEXT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(id)
+);
+```
+
+**TABLE: teams**
+```sql
+CREATE TABLE teams (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    team_code VARCHAR(20) NOT NULL UNIQUE,
+    team_name VARCHAR(100) NOT NULL,
+
+    team_leader_id BIGINT NULL,
+
+    description TEXT,
+
+    status ENUM(
+        'ACTIVE',
+        'INACTIVE'
+    ) DEFAULT 'ACTIVE',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_team_leader
+        FOREIGN KEY (team_leader_id)
+        REFERENCES employees(id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: team_members**
+```sql
+CREATE TABLE team_members (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    team_id BIGINT NOT NULL,
+    employee_id BIGINT NOT NULL,
+
+    role_in_team VARCHAR(50),
+
+    join_date DATE,
+    leave_date DATE NULL,
+
+    is_active BOOLEAN DEFAULT TRUE,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uk_team_employee (
+        team_id,
+        employee_id
+    ),
+
+    CONSTRAINT fk_tm_team
+        FOREIGN KEY (team_id)
+        REFERENCES teams(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_tm_employee
+        FOREIGN KEY (employee_id)
+        REFERENCES employees(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: project_teams**
+```sql
+CREATE TABLE project_teams (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    project_id BIGINT NOT NULL,
+    team_id BIGINT NOT NULL,
+
+    assigned_date DATE NOT NULL,
+    released_date DATE NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uk_project_team (
+        project_id,
+        team_id
+    ),
+
+    CONSTRAINT fk_pt_project
+        FOREIGN KEY (project_id)
+        REFERENCES projects(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_pt_team
+        FOREIGN KEY (team_id)
+        REFERENCES teams(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```

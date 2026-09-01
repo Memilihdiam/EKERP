@@ -2,6 +2,7 @@ import { fetchClientData } from "./client.data.js";
 import { fetchClientRfqs } from "./rfq.data.js";
 import { apiEndpoints, post } from "../../../shared/api.js";
 import { handleAuthError } from "../../../shared/handleError.js";
+import { fetchQuotClient } from "../client.quotations/quotation.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const clientDetail = document.getElementById('client-detail-content');
@@ -76,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
             rawHTML += `
                 <tbody>
                     <tr data-id="${item.id}" class="rfq-row shadow-sm">
-                        <td><strong>RFQ Code: </strong>${item.title}</td>
-                        <td><strong>RFQ Date: </strong>${item.title}</td>
+                        <td><strong>RFQ Title: </strong>${item.title}</td>
+                        <td><strong>RFQ Description: </strong>${item.description}</td>
                         <td><strong>RFQ Deadline:</strong>${new Date(item.submission_deadline).toLocaleDateString('id-ID')}</td>
                         <td><strong>Status: </strong>${item.status}</td>
                     </tr>
@@ -133,6 +134,42 @@ document.addEventListener('DOMContentLoaded', () => {
         detailsTab.style.display = 'block';
     }
 
+    async function renderClientQuot(){
+        const clientId = getClientIdFromUrl();
+        const quotClientData = await fetchQuotClient(clientId);
+        let rawHTML = '';
+        quotClientData.forEach(item => {
+            rawHTML += `
+                <tbody>
+                    <tr data-id="${item.id}" class="quot-row shadow-sm">
+                        <td><strong>Quot Title: </strong>${item.title}</td>
+                        <td><strong>Quot Description: </strong>${item.description}</td>
+                        <td><strong>Quot Valid:</strong>${new Date(item.valid_until).toLocaleDateString('id-ID')}</td>
+                        <td><strong>Status: </strong>${item.status}</td>
+                    </tr>
+                </tbody>
+            `;
+        })
+        
+        const table = `
+            <table class="table">
+                ${rawHTML}
+            </table>
+        `
+        
+        renderAdditionalDetails('quot-details', quotClientData, table, 'This Client Stil Not Have Quotations');
+        detailsTab.style.display = 'block';
+    }
+
+    document.getElementById('quot-details').addEventListener('click', (e) => {
+        const row = e.target.closest('tr.quot-row');
+        if(!row) return;
+        const quotId = row.dataset.id;
+        if(quotId){
+            window.location.href = `/pages/clients/quotation-detail/${quotId}`;
+        }
+    })
+
     function renderAdditionalDetails(elementId, data, rawHTML, emptyMessage){
         const container = document.getElementById(elementId);
         if (data && data.length > 0) {
@@ -147,12 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeTab = document.getElementById("closeTab");
     const overlay = document.getElementById("pageOverlay");
     const tab = document.getElementById("adding-tab");
+    const tabTitle = document.getElementById('tab-title');
     const tabContent = document.getElementById('tab-content');
 
     // Membuka tab
     picAdding.addEventListener("click", function () {
         overlay.classList.add("show");
         tab.classList.add("show");
+        tabTitle.textContent = "Adding Client PIC"
         tabContent.innerHTML = `
             <form class="form-group" id="adding-pic">
                 <div class="row m-2">
@@ -229,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderClientData();
         renderClientRfq();
         renderClientPIC();
+        renderClientQuot();
     }
 
     initialRender();
