@@ -72,6 +72,23 @@ Company run a procurement business workflow
 
 ### HRIS
 
+**TABLE: company_data**
+```sql
+CREATE TABLE company_data (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    alamat VARCHAR(100) NOT NULL,
+    kelurahan VARCHAR(100) NOT NULL,
+    kecamatan VARCHAR(100) NOT NULL,
+    kota VARCHAR(100) NOT NULL,
+    provinsi VARCHAR(100) NOT NULL,
+    negara VARCHAR(100) NOT NULL,
+    kode_pos VARCHAR(20) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    nomor_telepon VARCHAR(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
 **TABLE: departments**
 ```sql
 CREATE TABLE departments (
@@ -749,7 +766,10 @@ CREATE TABLE purchase_requests (
 CREATE TABLE purchase_orders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     po_number VARCHAR(50) NOT NULL UNIQUE,
-    pr_id BIGINT NULL, -- Bisa NULL jika PO dibuat langsung tanpa PR
+
+    source_type ENUM('client_quotation', 'purchase_requests') NOT NULL,
+    source_id BIGINT NOT NULL,
+
     vendor_id BIGINT NOT NULL,
     created_by BIGINT NOT NULL,
     
@@ -770,7 +790,6 @@ CREATE TABLE purchase_orders (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     INDEX idx_po_status (status),
-    CONSTRAINT fk_po_pr FOREIGN KEY (pr_id) REFERENCES purchase_requests(id) ON DELETE SET NULL,
     CONSTRAINT fk_po_vendor FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT,
     CONSTRAINT fk_po_created_by FOREIGN KEY (created_by) REFERENCES employees(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -786,8 +805,6 @@ CREATE TABLE po_items (
     quantity INT NOT NULL,
     unit_price BIGINT NOT NULL,
     total_price BIGINT NOT NULL, -- quantity * unit_price
-    
-    received_quantity INT DEFAULT 0, -- Untuk tracking saat barang tiba di gudang
     
     CONSTRAINT fk_po_item_po FOREIGN KEY (po_id) REFERENCES purchase_orders(id) ON DELETE CASCADE,
     CONSTRAINT fk_po_item_item FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE RESTRICT

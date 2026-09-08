@@ -3,6 +3,8 @@ import { fetchClientRfqs } from "./rfq.data.js";
 import { apiEndpoints, post } from "../../../shared/api.js";
 import { handleAuthError } from "../../../shared/handleError.js";
 import { fetchQuotClient } from "../client.quotations/quotation.data.js";
+import { fetchPoClient } from "../purchase_orders/po.data.js";
+import { initRowClickNavigation } from "../../../shared/handleRoute.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const clientDetail = document.getElementById('client-detail-content');
@@ -95,15 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAdditionalDetails('rfq-details', rfqClientData, table, 'This Client Still Not Send RFQ');
         detailsTab.style.display = 'block';
     }
-    
-    document.getElementById('rfq-details').addEventListener('click', (e) => {
-        const row = e.target.closest('tr.rfq-row');
-        if(!row) return;
-        const rfqId = row.dataset.id;
-        if(rfqId){
-            window.location.href = `/pages/clients/rfq-detail/${rfqId}`;
-        }
-    })
 
     async function renderClientPIC(){
         const clientId = getClientIdFromUrl();
@@ -161,14 +154,50 @@ document.addEventListener('DOMContentLoaded', () => {
         detailsTab.style.display = 'block';
     }
 
-    document.getElementById('quot-details').addEventListener('click', (e) => {
-        const row = e.target.closest('tr.quot-row');
-        if(!row) return;
-        const quotId = row.dataset.id;
-        if(quotId){
-            window.location.href = `/pages/clients/quotation-detail/${quotId}`;
-        }
-    })
+    async function renderClientPo(){
+        const clientId = getClientIdFromUrl();
+        const poClientData = await fetchPoClient(clientId);
+        console.log(poClientData);
+        let rawHTML = '';
+
+        poClientData.forEach(item => {
+            rawHTML += `
+                <tbody>
+                    <tr data-id="${item.id}" class="po-row shadow-sm">
+                        <td><strong>Purchase Order Number: </strong>${item.po_number}</td>
+                        <td><strong>Status: </strong>${item.status}</td>
+                        <td><strong>Expected Delivery Date: </strong>${new Date(item.expected_delivery_date).toLocaleDateString('id-ID')}</td>
+                    </tr>
+                </tbody>
+            `;
+        })
+
+        const table = `
+            <table class="table">
+                ${rawHTML}
+            </table>
+        `
+
+        renderAdditionalDetails('po-details', poClientData, table, 'This Client Still Not Have PO')
+    }
+
+    async function renderClientInvoice(){
+        const clientId = getClientIdFromUrl();
+        const invClientData = [];
+        let rawHTML = '';
+
+        invClientData.forEach(item => {
+            rawHTML += ``;
+        })
+
+        const table = `
+            <table>
+                ${rawHTML}
+            </table>
+        `
+
+        renderAdditionalDetails('invoice-details', invClientData, table, 'This Client Still Not Have Invoice')
+    }
 
     function renderAdditionalDetails(elementId, data, rawHTML, emptyMessage){
         const container = document.getElementById(elementId);
@@ -269,7 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderClientRfq();
         renderClientPIC();
         renderClientQuot();
+        renderClientPo();
+        renderClientInvoice();
     }
 
     initialRender();
+    initRowClickNavigation({container: '#rfq-details', rowSelector: 'tr.rfq-row', getUrl: (rfqId) => `/pages/clients/rfq-detail/${rfqId}`});
+    initRowClickNavigation({container: '#quot-details', rowSelector: 'tr.quot-row', getUrl: (quotId) => `/pages/clients/quotation-detail/${quotId}`});
+    initRowClickNavigation({container: '#po-details', rowSelector: 'tr.po-row', getUrl: (poId) => `/pages/clients/po-detail/${poId}`});
 })

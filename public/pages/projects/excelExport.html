@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Export HTML Table to Excel with Styles</title>
+    <!-- Include the TableToExcel library via CDN -->
+    <script src="https://jsdelivr.net"></script>
+
+    <style>
+        /* Styles applied here will be carried over to the Excel file */
+        .header-row { background-color: #4CAF50; color: white; font-weight: bold; }
+        .data-row { background-color: #f2f2f2; }
+        .text-right { text-align: right; }
+    </style>
+</head>
+<body>
+
+    <!-- Target Table with Explicit Inline/Class Styles -->
+    <table id="myTable" border="1" style="border-collapse: collapse;">
+        <thead>
+            <tr class="header-row">
+                <th style="width: 150px;">Product Name</th>
+                <th style="width: 100px;">Category</th>
+                <th style="width: 100px;">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="data-row">
+                <td>Wireless Mouse</td>
+                <td>Electronics</td>
+                <td class="text-right">$25.00</td>
+            </tr>
+            <tr>
+                <td>Mechanical Keyboard</td>
+                <td>Electronics</td>
+                <td class="text-right">$85.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <!-- Trigger Button -->
+    <button onclick="exportTable()">Export to Excel</button>
+
+    <script>
+        function exportTable() {
+            let table = document.getElementById("myTable");
+            TableToExcel.convert(table, {
+                name: "ExportedData.xlsx",
+                sheet: {
+                    name: "Product Inventory"
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

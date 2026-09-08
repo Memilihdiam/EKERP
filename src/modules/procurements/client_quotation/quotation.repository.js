@@ -28,7 +28,6 @@ exports.findQuotItem = async (quotId) => {
 }
 
 exports.addQuotForRfq = async (quotData, connection = pool) => {
-    console.log(quotData);
     const { 
         quotation_number, client_id, client_rfq_id, quotation_date, valid_until, title, description,
         subtotal, discount_amount, tax_amount, shipping_cost, grand_total, payment_terms, delivery_terms,

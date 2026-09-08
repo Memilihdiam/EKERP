@@ -2,7 +2,7 @@ import { get, apiEndpoints } from "../../../shared/api.js";
 
 export async function fetchAllRfqs(){
     const response = await get(apiEndpoints.rfqsClients);
-    return response;
+    return response.client_rfq;
 }
 
 export async function fetchClientRfqDetail(id){

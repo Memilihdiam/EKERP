@@ -33,7 +33,12 @@ const typeLetter = {
     slm: 'SLM', // Surat Lamaran
     smt: 'SMT', // Surat Mutasi
     sct: 'SCT', // Surat Cuti
-    sdn: 'SDN' // Surat Dinas
+    sdn: 'SDN', // Surat Dinas
+    inv: 'INV', // Invoice
 }
 
-module.exports = { httpStatus, typeLetter };
+const sourceType = {
+    poClient: 'client_quotations'
+}
+
+module.exports = { httpStatus, typeLetter, sourceType };

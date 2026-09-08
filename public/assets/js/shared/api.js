@@ -14,6 +14,9 @@ export const apiEndpoints = {
     quotation: '/api/cquots',
     quotationDetail: (id) => `/api/cquots/${id}`,
     quotationClient: (id) => `/api/cquots/client/${id}`,
+    purchaseOrders: '/api/po',
+    poClient: (clientId) => `/api/po/client/${clientId}`,
+    poDetail: (id) => `/api/po/${id}`
 }
 
 async function get(url){

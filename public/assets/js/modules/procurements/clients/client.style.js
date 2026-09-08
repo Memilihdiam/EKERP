@@ -1,5 +1,6 @@
 import { apiEndpoints } from "../../../shared/api.js";
 import { fetchAllClientsData, fetchIndustriesData } from "./client.data.js";
+import { fetchAllRfqs } from "./rfq.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const tableBody = document.getElementById('table-body');
@@ -16,12 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableRowHTML += `
                     <tr data-id="${item.id}" class="client-row">
                         <td>${no++}</td>
-                        <td>${item.client_code}</td>
                         <td>${item.company_name}</td>
-                        <td>${item.industry_name}</td>
                         <td>${item.company_email}</td>
                         <td>${item.company_number}</td>
-                        <td>${item.address}</td>
                         <td>${item.status}</td>
                     </tr>
                 `
@@ -32,8 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function initialRender(){
         const response = await fetchAllClientsData();
+        const rfqData = await fetchAllRfqs();
         storeData = response.clients;
+        console.log(storeData);
         renderTableClients(storeData);
+        storeData = rfqData;
+        console.log(storeData);
     }
 
     tableBody.addEventListener('click', (e) => {
