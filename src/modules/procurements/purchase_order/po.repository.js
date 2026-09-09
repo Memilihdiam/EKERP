@@ -34,7 +34,6 @@ exports.getPoItems = async (poId) => {
 }
 
 exports.addPo = async (poData, connection = pool) => {
-    console.log(poData);
     const { po_number, source_type, source_id, project_id, client_id, vendor_id, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions } = poData;
     
     const [rows] = await connection.execute(
@@ -42,7 +41,7 @@ exports.addPo = async (poData, connection = pool) => {
         (
             po_number, source_type, source_id, project_id, client_id, vendor_id, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [po_number, source_type, source_id, project_id ?? null, client_id ?? null, vendor_id ?? null, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions]
     );
     return rows.insertId;

@@ -32,10 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const response = await fetchAllClientsData();
         const rfqData = await fetchAllRfqs();
         storeData = response.clients;
-        console.log(storeData);
         renderTableClients(storeData);
         storeData = rfqData;
-        console.log(storeData);
     }
 
     tableBody.addEventListener('click', (e) => {

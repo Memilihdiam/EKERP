@@ -53,7 +53,7 @@ exports.addPo = async (req, res) => {
         if(!poData.created_by){
             poData.created_by = id;
         }
-        await service.addClientPo(poData, poItems);
+        await service.createPo(poData, poItems);
 
         res.status(httpStatus.created).json({
             success: true,

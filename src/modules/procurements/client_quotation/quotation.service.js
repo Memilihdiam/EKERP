@@ -26,7 +26,7 @@ exports.getQuotByIdForRfq = async (quotationId) => {
             error.statusCode = httpStatus.notFound;
             throw error;
         }
-        const quotItem = await repository.findQuotItem(quotationId);
+        let quotItem = await repository.findQuotItem(quotationId);
         if(quotItem.length === 0){
             quotItem = [];
         }

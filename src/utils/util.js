@@ -38,7 +38,7 @@ const typeLetter = {
 }
 
 const sourceType = {
-    poClient: 'client_quotations'
+    quotation: 'client_quotations'
 }
 
 module.exports = { httpStatus, typeLetter, sourceType };

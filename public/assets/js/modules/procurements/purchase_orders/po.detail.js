@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const poId = getPoIdFromUrl();
             const data = await fetchPoDetail(poId);
-            console.log(data);
 
             // Destructure data sesuai skema database
             const company = data.company;
@@ -30,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const vendor = data.vendor;
             const clientData = await fetchClientData(po.client_id);
             const client = clientData.client;
-            console.log(client);
 
 
             // --- 2. RENDER PO META DATA ---

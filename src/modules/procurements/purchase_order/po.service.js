@@ -20,7 +20,7 @@ exports.getClientPo = async (clientId) => {
             return { poData: JSON.parse(cacheData) };
         }
 
-        const poData = await repository.getClientPo(clientId, sourceType.poClient);
+        const poData = await repository.getClientPo(clientId, sourceType.quotation);
         if(poData.length === 0){
             return { poData: [] };
         }
@@ -71,7 +71,7 @@ exports.getDetailPo = async (poId) => {
     }
 }
 
-exports.addClientPo = async (poData, poItems) => {
+exports.createPo = async (poData, poItems) => {
     if(!poData || !poItems){
         const error = new Error("Field Can't Be Null");
         error.statusCode = httpStatus.badRequest;
@@ -88,10 +88,14 @@ exports.addClientPo = async (poData, poItems) => {
         await connection.beginTransaction();
 
         const sequence = await letterService.letterSequence(type, month, year, connection);
-        if(!poData.po_number && !poData.source_type){
+        if(!poData.po_number){
             const code = await letterService.letterCode(type);
             poData.po_number = await letterCode(code, month, year, sequence);
-            poData.source_type = sourceType.poClient;
+        }
+
+        const allowedSourceType = Object.values(sourceType);
+        if(!allowedSourceType.includes(poData.source_type)){
+            throw new Error('Invalid PO Source Type');
         }
         
         const poId = await repository.addPo(poData, connection);
@@ -101,10 +105,11 @@ exports.addClientPo = async (poData, poItems) => {
 
         await letterService.addSequence(type, month, year, sequence + 1, connection);
 
+        await connection.commit();
+        
         await redisClient.del(`client-po:${poData.client_id}`)
     }catch(err){
         if(connection) await connection.rollback();
-        console.log(err);
         throw err;
     }finally{
         if(connection) connection.release();

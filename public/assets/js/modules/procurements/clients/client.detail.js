@@ -5,6 +5,7 @@ import { handleAuthError } from "../../../shared/handleError.js";
 import { fetchQuotClient } from "../client.quotations/quotation.data.js";
 import { fetchPoClient } from "../purchase_orders/po.data.js";
 import { initRowClickNavigation } from "../../../shared/handleRoute.js";
+import { fetchInvoicesClient } from "../../finances/invoices/invoice.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const clientDetail = document.getElementById('client-detail-content');
@@ -157,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function renderClientPo(){
         const clientId = getClientIdFromUrl();
         const poClientData = await fetchPoClient(clientId);
-        console.log(poClientData);
         let rawHTML = '';
 
         poClientData.forEach(item => {
@@ -183,11 +183,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function renderClientInvoice(){
         const clientId = getClientIdFromUrl();
-        const invClientData = [];
+        const invClientData = await fetchInvoicesClient(clientId);
         let rawHTML = '';
 
         invClientData.forEach(item => {
-            rawHTML += ``;
+            rawHTML += `
+                <tbody>
+                    <tr data-id="${item.id}" class="inv-row shadow-sm">
+                        <td><strong>Invoice Number: </strong>${item.invoice_number}</td>
+                        <td><strong>Status Paid: </strong>${item.payment_status}</td>
+                        <td>
+                            <p><strong>Due Date: </strong>${item.due_date}</p>
+                            <p><strong>Issue Date: </strong>${item.issue_date}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            `;
         })
 
         const table = `
@@ -269,8 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 whatsapp_number: document.getElementById('pic-wa').value,
                 status: document.getElementById('pic-status').value
             };
-            console.log(picData);
-
+            
             try{
                 const response = await post(apiEndpoints.addPic, picData);
     

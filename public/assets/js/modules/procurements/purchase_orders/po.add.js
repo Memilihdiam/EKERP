@@ -1,4 +1,5 @@
 import { get, post, apiEndpoints } from "../../../shared/api.js";
+import { poSourceType } from "../../../shared/source_type.js";
 import { fetchQuotbyId, fetchQuotClient } from "../client.quotations/quotation.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderItemInput(itemId = '', itemDescription = '', quantity = 0, unitPrice = 0, totalPrice = 0) {
         const div = document.createElement('div');
 
-        div.classList.add("m-2", "border-top", "po-row");
+        div.classList.add("m-2", "border-top", "purchase_order-row");
 
         div.innerHTML = `
             <div class="d-flex justify-content-between align-items-center mt-2">
@@ -67,9 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculateItemTotal(row) {
+        console.log(row);
         const quantityInput = row.querySelector('.quantity');
         const unitPriceInput = row.querySelector('.unit-price');
         const totalPriceInput = row.querySelector('.total-price');
+
+        if (!quantityInput || !unitPriceInput || !totalPriceInput) {
+            return;
+        }
 
         const quantity = parseFloat(quantityInput.value) || 0;
         const unitPrice = parseFloat(unitPriceInput.value) || 0;
@@ -82,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Calculate subtotal
      */
     function calculateSubtotal() {
-        const itemRows = document.querySelectorAll('.po-row');
+        const itemRows = document.querySelectorAll('.purchase_order-row');
 
         let subtotal = 0;
 
@@ -151,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.target.classList.contains('quantity') ||
                 e.target.classList.contains('unit-price')
             ) {
-                const row = e.target.closest('.po-row');
+                const row = e.target.closest('.purchase_order-row');
 
                 if (row) {
                     calculateItemTotal(row);
@@ -166,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
          */
         itemContent.addEventListener('click', function (e) {
             if (e.target.classList.contains('remove-item')) {
-                const row = e.target.closest('.po-row');
-                
+                const row = e.target.closest('.purchase_order-row');
+
                 if (row) {
                     row.remove();
                 }
@@ -313,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const quotData = await fetchQuotClient(clientId);
 
         let quotOption = '';
-        console.log(quotData);
         quotData.forEach(item => {
             quotOption += `<option value="${item.id}">${item.title}</option>`;
         });
@@ -328,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             itemContent.innerHTML = '';
             no = 1;
-            
+
             if (!quotIdSelect.value) {
                 calculateTotals();
                 return;
@@ -338,10 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetchQuotbyId(quotIdSelect.value);
                 const quotItem = response.quotItem || [];
 
-                console.log(quotItem);
-
                 for (const item of quotItem) {
-                    const element = renderItemInput(item.item_id ?? "", item.item_description ?? "", item.quantity ?? 0, item.unit_price ?? 0, item.total_price ?? 0 );
+                    const element = renderItemInput(item.item_id ?? "", item.item_description ?? "", item.quantity ?? 0, item.unit_price ?? 0, item.total_price ?? 0);
                     itemContent.append(element);
                 }
 
@@ -374,6 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const poData = {
                 client_id: getClientIdFromUrl(),
                 source_id: quotIdSelect.value,
+                source_type: poSourceType.quotation,
                 po_date: poDate.value,
                 expected_delivery_date: expectedDeliveryDate.value,
                 subtotal: subTotal.value,
@@ -387,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const poItems = [];
 
-            const row = document.querySelectorAll('.po-row');
+            const row = document.querySelectorAll('.purchase_order-row');
             row.forEach(row => {
                 const itemId = row.querySelector('.item-id').value || null;
                 const itemDescription = row.querySelector('.item-description').value;
@@ -409,12 +413,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 poData,
                 poItems
             }
-            try{
+            try {
                 const response = await post(apiEndpoints.purchaseOrders, payload);
-                if(response.ok){
+                if (response.success === true) {
                     alert(response.message);
+                    window.location.reload();
                 }
-            }catch(err){
+            } catch (err) {
                 alert(err);
                 console.log(err);
             }
