@@ -34,27 +34,28 @@ exports.getPoItems = async (poId) => {
 }
 
 exports.addPo = async (poData, connection = pool) => {
-    const { po_number, source_type, source_id, project_id, client_id, vendor_id, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions } = poData;
+    const { po_number, title, source_type, source_id, project_id, client_id, vendor_id, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions } = poData;
     
     const [rows] = await connection.execute(
         `INSERT INTO purchase_orders 
         (
-            po_number, source_type, source_id, project_id, client_id, vendor_id, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions
+            po_number, title, source_type, source_id, project_id, client_id, vendor_id, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [po_number, source_type, source_id, project_id ?? null, client_id ?? null, vendor_id ?? null, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions]
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [po_number, title, source_type, source_id, project_id ?? null, client_id ?? null, vendor_id ?? null, created_by, po_date, expected_delivery_date, subtotal, tax_amount, shipping_cost, grand_total, status, payment_status, terms_and_conditions]
     );
     return rows.insertId;
 }
 
 exports.addPoItems = async (poId, poItem, connection = pool) => {
-    const query = `INSERT INTO po_items (po_id, item_id, item_description, quantity, unit_price, total_price) VALUES ?`;
+    const query = `INSERT INTO po_items (po_id, item_id, item_description, quantity, unit, unit_price, total_price) VALUES ?`;
 
     const values = poItem.map(item => [
         poId,
         item.item_id,
         item.item_description,
         item.quantity,
+        item.unit,
         item.unit_price,
         item.total_price
     ])

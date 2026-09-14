@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tr.innerHTML = `
                     <td class="text-center">${index + 1}</td>
                     <td>
-                        <span class="fw-bold">${item.item_name || 'Item ID: ' + itemId}</span>
+                        <span class="fw-bold">${item.item_description || 'Item ID: ' + itemId}</span>
                     </td>
                     <td class="text-center">${item.quantity}</td>
                     <td class="text-end">${formatCurrency(item.unit_price)}</td>

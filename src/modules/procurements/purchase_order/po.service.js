@@ -99,7 +99,7 @@ exports.createPo = async (poData, poItems) => {
             throw new Error('Invalid PO Source Type');
         }
         
-        const totals = calculatePurchaseOrderTotals({poItems, shipping_cost: poData.shipping_cost, tax_amount: poData.tax_amount});
+        const totals = calculatePurchaseOrderTotals({items: poItems, shipping_cost: poData.shipping_cost, tax_amount: poData.tax_amount});
         const data = {
             ...poData,
             subtotal: totals.subtotal,

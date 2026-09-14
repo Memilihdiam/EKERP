@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return parts[parts.length - 1];
     };
 
-    function renderItemInput(itemId = '', itemDescription = '', quantity = 0, unitPrice = 0, totalPrice = 0) {
+    function renderItemInput(itemId = '', itemDescription = '', quantity = 0, unit = '', unitPrice = 0, totalPrice = 0) {
         const div = document.createElement('div');
 
         div.classList.add("m-2", "border-top", "purchase_order-row");
@@ -50,19 +50,72 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="number" class="form-control quantity" min="0" step="any" required value="${quantity}">
                 </div>
 
-                <div class="col-6">
-                    <label class="form-label">Unit Price</label>
-                    <input type="number" class="form-control unit-price" min="0" step="any" required value="${unitPrice}">
+                <div class="col-md-6">
+                    <label class="form-label">Unit of Item</label>
+                    <select class="form-control unit" required>
+                        <option value="">Select Item Measure Unit</option>
+                        <!-- Count / Individual -->
+                        <option value="pcs">Pieces (pcs)</option>
+                        <option value="unit">Unit</option>
+                        <option value="set">Set</option>
+                        <option value="pair">Pair</option>
+                        <option value="dozen">Dozen</option>
+                        <!-- Packaging -->
+                        <option value="box">Box</option>
+                        <option value="pack">Pack</option>
+                        <option value="bag">Bag</option>
+                        <option value="bottle">Bottle</option>
+                        <option value="can">Can</option>
+                        <option value="carton">Carton</option>
+                        <option value="case">Case</option>
+                        <option value="bundle">Bundle</option>
+                        <option value="roll">Roll</option>
+                        <option value="reel">Reel</option>
+                        <option value="tube">Tube</option>
+                        <option value="sack">Sack</option>
+                        <option value="pail">Pail</option>
+                        <option value="drum">Drum</option>
+                        <!-- Weight -->
+                        <option value="mg">Milligram (mg)</option>
+                        <option value="g">Gram (g)</option>
+                        <option value="kg">Kilogram (kg)</option>
+                        <option value="ton">Metric Ton (ton)</option>
+                        <!-- Volume -->
+                        <option value="ml">Milliliter (ml)</option>
+                        <option value="l">Liter (L)</option>
+                        <option value="m3">Cubic Meter (m³)</option>
+                        <!-- Length -->
+                        <option value="mm">Millimeter (mm)</option>
+                        <option value="cm">Centimeter (cm)</option>
+                        <option value="m">Meter (m)</option>
+                        <option value="km">Kilometer (km)</option>
+                        <!-- Area -->
+                        <option value="m2">Square Meter (m²)</option>
+                        <!-- Other -->
+                        <option value="sheet">Sheet</option>
+                        <option value="ream">Ream</option>
+                        <option value="pair">Pair</option>
+                        <option value="lot">Lot</option>
+                        <option value="job">Job</option>
+                        <option value="service">Service</option>
+                    </select>
                 </div>
             </div>
 
             <div class="row m-2">
-                <div class="col-12">
+                <div class="col-6">
+                    <label class="form-label">Unit Price</label>
+                    <input type="number" class="form-control unit-price" min="0" step="any" required value="${unitPrice}">
+                </div>
+                <div class="col-6">
                     <label class="form-label">Total Price</label>
                     <input type="number" class="form-control total-price" min="0" step="any" readonly value="${totalPrice}">
                 </div>
             </div>
         `;
+
+        const unitInput = div.querySelector('.unit');
+        unitInput.value = unit;
 
         return div;
     }
@@ -201,6 +254,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <div class="row m-2">
+                    <div class="col-12">
+                        <input class="form-control" id="title" placeholder="Title" required>
+                    </div>
+                </div>
+
+                <div class="row m-2">
                     <div class="col-6">
                         <label>Purchase Order Date</label>
                         <input type="date" class="form-control" id="po-date" required>
@@ -280,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const poForm = document.getElementById('po-form');
         const quotIdSelect = document.getElementById('quot-id');
+        const title = document.getElementById('title');
         const poDate = document.getElementById('po-date');
         const expectedDeliveryDate = document.getElementById('expected-date');
         const status = document.getElementById('status');
@@ -316,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let quotOption = '';
         quotData.forEach(item => {
-            quotOption += `<option value="${item.id}">${item.title}</option>`;
+            quotOption += `<option value="${item.id}">${item.quotation_number}</option>`;
         });
 
         quotIdSelect.innerHTML = `
@@ -338,11 +398,16 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await fetchQuotbyId(quotIdSelect.value);
                 const quotItem = response.quotItem || [];
+                console.log(response);
+
+                title.value = response.quotation.title;
 
                 for (const item of quotItem) {
-                    const element = renderItemInput(item.item_id ?? "", item.item_description ?? "", item.quantity ?? 0, item.unit_price ?? 0, item.total_price ?? 0);
+                    const element = renderItemInput(item.item_id ?? "", item.item_description ?? "", item.quantity ?? 0, item.unit ?? "", item.unit_price ?? 0, item.total_price ?? 0);
                     itemContent.append(element);
                 }
+
+                console.log(document.querySelector('.unit').value);
 
                 /*
                  * Hitung ulang:
@@ -371,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             const poData = {
+                title: title.value,
                 client_id: getClientIdFromUrl(),
                 source_id: quotIdSelect.value,
                 source_type: poSourceType.quotation,
@@ -390,12 +456,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemId = row.querySelector('.item-id').value || null;
                 const itemDescription = row.querySelector('.item-description').value;
                 const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+                const unit = row.querySelector('.unit').value;
                 const unitPrice = parseFloat(row.querySelector('.unit-price').value) || 0;
                 const totalPrice = parseFloat(row.querySelector('.total-price').value) || 0;
                 const item = {
                     item_id: itemId,
                     item_description: itemDescription,
                     quantity: quantity,
+                    unit: unit,
                     unit_price: unitPrice,
                 }
 

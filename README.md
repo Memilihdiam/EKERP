@@ -347,8 +347,22 @@ CREATE sequence_of_letter (
 CREATE TABLE invoices (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     invoice_number VARCHAR(50) NOT NULL UNIQUE,
-    project_id BIGINT NOT NULL,
-    client_id BIGINT NOT NULL,
+
+    source_id BIGINT NOT NULL,
+    source_type ENUM('purchase_orders') NOT NULL,
+
+    vendor_id BIGINT DEFAULT NULL,
+    client_id BIGINT DEFAULT NULL,
+
+    receiver_name VARCHAR(255) NOT NULL,
+    receiver_address VARCHAR(255) NOT NULL,
+    receiver_phone VARCHAR(20) NOT NULL,
+    receiver_email VARCHAR(255) NOT NULL,
+
+    sender_name VARCHAR(255) NOT NULL,
+    sender_address VARCHAR(255) NOT NULL,
+    sender_phone VARCHAR(20) NOT NULL,
+    sender_email VARCHAR(255) NOT NULL,
     
     issue_date DATE NOT NULL,
     due_date DATE NOT NULL,
@@ -359,7 +373,11 @@ CREATE TABLE invoices (
     grand_total BIGINT NOT NULL,
     
     payment_status ENUM('UNPAID', 'PARTIAL', 'PAID') DEFAULT 'UNPAID',
-    status ENUM('DRAFT', 'SENT', 'CANCELLED') DEFAULT 'DRAFT',
+    status ENUM('DRAFT', 'SENT', 'CANCELLED', 'DORMANT') DEFAULT 'DRAFT',
+
+    origin_id BIGINT DEFAULT NULL,
+    previous_id BIGINT DEFAULT NULL,
+    revision_number INT DEFAULT NULL,
     
     created_by BIGINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -367,7 +385,10 @@ CREATE TABLE invoices (
     
     CONSTRAINT fk_inv_project FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE RESTRICT,
     CONSTRAINT fk_inv_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE RESTRICT,
-    CONSTRAINT fk_inv_created_by FOREIGN KEY (created_by) REFERENCES employees(id) ON DELETE RESTRICT
+    CONSTRAINT fk_inv_created_by FOREIGN KEY (created_by) REFERENCES employees(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_inv_vendor FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_inv_origin FOREIGN KEY (origin_id) REFERENCES invoices(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_inv_previous FOREIGN KEY (previous_id) REFERENCES invoices(id) ON DELETE RESTRICT 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
@@ -376,12 +397,27 @@ CREATE TABLE invoices (
 CREATE TABLE invoice_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     invoice_id BIGINT NOT NULL,
+    
     item_description VARCHAR(255) NOT NULL,
     quantity INT NOT NULL,
+    unit VARCHAR(30) NOT NULL,
+
     unit_price BIGINT NOT NULL,
     total_price BIGINT NOT NULL,
     
     CONSTRAINT fk_inv_item_invoice FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+**TABLE: invoice_termins**
+```sql
+CREATE TABLE invoice_termins (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    invoice_id BIGINT NOT NULL,
+    termin_number INT NOT NULL,
+    termin_payment BIGINT NOT NULL,
+
+    CONSTRAINT fk_inv_id FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
@@ -766,6 +802,7 @@ CREATE TABLE purchase_requests (
 CREATE TABLE purchase_orders (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     po_number VARCHAR(50) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
 
     source_type ENUM('client_quotation', 'purchase_requests') NOT NULL,
     source_id BIGINT NOT NULL,
@@ -789,6 +826,7 @@ CREATE TABLE purchase_orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
+    INDEX idx_po_title (title),
     INDEX idx_po_status (status),
     CONSTRAINT fk_po_vendor FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT,
     CONSTRAINT fk_po_created_by FOREIGN KEY (created_by) REFERENCES employees(id) ON DELETE RESTRICT
@@ -803,6 +841,8 @@ CREATE TABLE po_items (
     item_id BIGINT NOT NULL,
     
     quantity INT NOT NULL,
+    unit VARCHAR(30) NOT NULL,
+
     unit_price BIGINT NOT NULL,
     total_price BIGINT NOT NULL, -- quantity * unit_price
     
