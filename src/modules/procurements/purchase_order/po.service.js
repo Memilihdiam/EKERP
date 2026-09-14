@@ -4,6 +4,7 @@ const { httpStatus, typeLetter, sourceType } = require("../../../utils/util");
 const repository = require('./po.repository');
 const letterService = require('../../cores/letter/letter.service');
 const { letterCode } = require("../../../utils/code-generator");
+const { calculatePurchaseOrderTotals } = require("../../../utils/calculate");
 
 exports.getClientPo = async (clientId) => {
     if(!clientId){
@@ -98,15 +99,24 @@ exports.createPo = async (poData, poItems) => {
             throw new Error('Invalid PO Source Type');
         }
         
-        const poId = await repository.addPo(poData, connection);
+        const totals = calculatePurchaseOrderTotals({poItems, shipping_cost: poData.shipping_cost, tax_amount: poData.tax_amount});
+        const data = {
+            ...poData,
+            subtotal: totals.subtotal,
+            tax_amount: totals.tax_amount,
+            shipping_cost: totals.shipping_cost,
+            grand_total: totals.grand_total
+        }
+
+        const poId = await repository.addPo(data, connection);
         if(poItems && poItems.length > 0){
-            await repository.addPoItems(poId, poItems, connection);
+            await repository.addPoItems(poId, totals.items, connection);
         }
 
         await letterService.addSequence(type, month, year, sequence + 1, connection);
 
         await connection.commit();
-        
+
         await redisClient.del(`client-po:${poData.client_id}`)
     }catch(err){
         if(connection) await connection.rollback();

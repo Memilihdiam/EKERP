@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculateItemTotal(row) {
-        console.log(row);
         const quantityInput = row.querySelector('.quantity');
         const unitPriceInput = row.querySelector('.unit-price');
         const totalPriceInput = row.querySelector('.total-price');
@@ -123,10 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const shippingCost = parseFloat(shippingCostInput.value) || 0;
         const taxAmount = parseFloat(taxAmountInput.value) || 0;
 
-        const grandTotal =
-            subtotal +
-            shippingCost +
-            taxAmount;
+        const grandTotal = subtotal + shippingCost + taxAmount;
 
         grandTotalInput.value = grandTotal.toFixed(2);
     }
@@ -380,10 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 source_type: poSourceType.quotation,
                 po_date: poDate.value,
                 expected_delivery_date: expectedDeliveryDate.value,
-                subtotal: subTotal.value,
                 tax_amount: taxAmount.value,
                 shipping_cost: shippingCost.value,
-                grand_total: grandTotal.value,
                 status: status.value,
                 payment_status: paymentStatus.value,
                 terms_and_conditions: termsConditions.value
@@ -403,7 +397,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     item_description: itemDescription,
                     quantity: quantity,
                     unit_price: unitPrice,
-                    total_price: totalPrice,
                 }
 
                 poItems.push(item);
