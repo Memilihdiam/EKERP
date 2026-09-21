@@ -1,10 +1,15 @@
 export const apiEndpoints = {
+    // === CORES ===
     login: '/api/users',
     session: '/api/auth/session',
     user: '/api/users/me',
     industries: '/api/clients/industry',
+
+    // === PROJECT MANAGEMENTS ===
     allProject: '/api/projects',
     detailProject: (id) => `/api/projects/${id}`,
+
+    // === CLIENTS MANAGEMENTS === 
     clients: '/api/clients',
     detailClient: (id) => `/api/clients/${id}`,
     addPic: '/api/clients/pic',
@@ -16,7 +21,12 @@ export const apiEndpoints = {
     quotationClient: (id) => `/api/cquots/client/${id}`,
     purchaseOrders: '/api/po',
     poClient: (clientId) => `/api/po/client/${clientId}`,
-    poDetail: (id) => `/api/po/${id}`
+    poDetail: (id) => `/api/po/${id}`,
+
+    // === FINANCE ===
+    invoices: '/api/invoices',
+    invoicesClient: (clientId) => `/api/invoices/client/${clientId}`,
+    invoiceDetail: (invoiceId) => `/api/invoices/${invoiceId}`
 }
 
 async function get(url){

@@ -4,5 +4,5 @@ export const poSourceType = {
 }
 
 export const invSourceType = {
-    poClient: 'client-po',
+    poClient: 'purchase_orders',
 }

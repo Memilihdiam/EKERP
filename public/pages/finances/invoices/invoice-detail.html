@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.ico" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        hr{
+            border-top:3px solid black;
+        }
+        /* Styling to simulate A4 paper on screen */
+        .a4-paper {
+            background: white;
+            max-width: 210mm;
+            /* A4 width */
+            min-height: 297mm;
+            /* A4 height */
+            margin: 2rem auto;
+            padding: 2.5rem;
+            /* ~1 inch margin */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-justify {
+            text-align: justify;
+        }
+
+        /* Print specific styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .a4-paper {
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                width: 100%;
+                max-width: none;
+                min-height: auto;
+            }
+
+            /* Hide print button when printing */
+            .no-print {
+                display: none !important;
+            }
+
+            /* Ensure table background colors are printed */
+            .table-quotation th {
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="d-flex">
+        <div id="sidebar-display"></div>
+        <div class="flex-grow-1">
+            <div id="header-display"></div>
+            <main class="p-2">
+                <div class="a4-paper" id="printable-area">
+                    <div id="header-paper">
+                        <div class="d-flex justify-content-between">
+                            <div class="p-2">
+                                <h1 class="fs-1">INVOICE</h1>
+                                <p class="mb-0"><strong>INVOICE NUMBER: </strong><span id="invoice-number"></span></p>
+                                <p class="mb-0"><strong>REVISION NUMBER: </strong><span id="revision-number"></span></p>
+                                <p class="mb-0"><strong>INVOICE DATE: </strong><span id="invoice-date"></span></p>
+                            </div>
+
+                            <div class="p-2">
+                                <div class="d-flex">
+                                    <img src="/assets/images/company_logo.png" width="130" height="130">
+                                    <div class="m-1">
+                                        <h1 class="fs-1 mb-0">PT. WICITRA</h1>
+                                        <p class="fs-3 mb-0">KARSA MANGGALA</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <div class="m-1" style="padding:0;">
+                                <p class="fw-bold mb-0" id="sender-name"></p>
+                                <p class="mb-0" id="sender-address"></p>
+                                <p class="mb-0" id="sender-phone"></p>
+                                <p class="" id="sender-email"></p>
+                            </div>
+
+                            <div class="m-1" style="padding:0;">
+                                <p class="mb-0">Kepada Yth.</p>
+                                <p class="mb-0 fw-bold" id="receiver-name"></p>
+                                <p class="mb-0" id="receiver-address"></p>
+                                <p class="" id="receiver-phone"></p>
+                            </div>
+                        </div>
+
+                        <table class="table table-borderless">
+                            <thead class="border-bottom">
+                                <tr>
+                                    <th>No</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Unit</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="item-display"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/shared/auth.js"></script>
+    <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/layout/sidebar.js"></script>
+    <script type="module" src="/assets/js/modules/finances/invoices/invoice.detail.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -162,19 +162,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         poClientData.forEach(item => {
             rawHTML += `
-                <tbody>
-                    <tr data-id="${item.id}" class="po-row shadow-sm">
-                        <td><strong>Purchase Order Number: </strong>${item.po_number}</td>
-                        <td><strong>Status: </strong>${item.status}</td>
-                        <td><strong>Expected Delivery Date: </strong>${new Date(item.expected_delivery_date).toLocaleDateString('id-ID')}</td>
-                    </tr>
-                </tbody>
+                <tr data-id="${item.id}" class="po-row shadow-sm">
+                    <td><strong>Purchase Order Number: </strong>${item.po_number}</td>
+                    <td><strong>Status: </strong>${item.status}</td>
+                    <td><strong>Expected Delivery Date: </strong>${new Date(item.expected_delivery_date).toLocaleDateString('id-ID')}</td>
+                </tr>
             `;
         })
 
         const table = `
             <table class="table">
-                ${rawHTML}
+                <tbody>
+                    ${rawHTML}
+                </tbody>
             </table>
         `
 
@@ -188,22 +188,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         invClientData.forEach(item => {
             rawHTML += `
-                <tbody>
-                    <tr data-id="${item.id}" class="inv-row shadow-sm">
-                        <td><strong>Invoice Number: </strong>${item.invoice_number}</td>
-                        <td><strong>Status Paid: </strong>${item.payment_status}</td>
-                        <td>
-                            <p><strong>Due Date: </strong>${item.due_date}</p>
-                            <p><strong>Issue Date: </strong>${item.issue_date}</p>
-                        </td>
-                    </tr>
-                </tbody>
+                <tr data-id="${item.id}" class="inv-row shadow-sm">
+                    <td><strong>Invoice Number: </strong>${item.invoice_number}</td>
+                    <td><strong>Status Paid: </strong>${item.payment_status}</td>
+                    <td><strong>Due Date: </strong>${new Date(item.due_date).toLocaleDateString('en-CA')}</td>
+                    <td><strong>Issue Date: </strong>${new Date(item.issue_date).toLocaleDateString('en-CA')}</td>
+                    <td><button class="add-termin btn btn-primary"><i class="bi bi-pensil"></i>Add Termin</button></td>
+                </tr>
             `;
         })
 
         const table = `
-            <table>
-                ${rawHTML}
+            <table class="table">
+                <tbody>
+                    ${rawHTML}
+                </tbody>
             </table>
         `
 
@@ -280,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 whatsapp_number: document.getElementById('pic-wa').value,
                 status: document.getElementById('pic-status').value
             };
-            
+
             try{
                 const response = await post(apiEndpoints.addPic, picData);
     
@@ -316,4 +315,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initRowClickNavigation({container: '#rfq-details', rowSelector: 'tr.rfq-row', getUrl: (rfqId) => `/pages/clients/rfq-detail/${rfqId}`});
     initRowClickNavigation({container: '#quot-details', rowSelector: 'tr.quot-row', getUrl: (quotId) => `/pages/clients/quotation-detail/${quotId}`});
     initRowClickNavigation({container: '#po-details', rowSelector: 'tr.po-row', getUrl: (poId) => `/pages/clients/po-detail/${poId}`});
+    initRowClickNavigation({container: '#invoice-details', rowSelector: 'tr.inv-row', getUrl: (invoiceId) => `/pages/finances/invoices/invoice-detail/${invoiceId}`});
 })

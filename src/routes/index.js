@@ -7,6 +7,7 @@ const clients = require('../modules/procurements/clients/clients.api');
 const crfqs = require('../modules/procurements/client_rfq/rfq.api');
 const cquots = require('../modules/procurements/client_quotation/quotation.api.js');
 const po = require('../modules/procurements/purchase_order/po.api.js');
+const invoice = require('../modules/finances/invoices/invoice.api.js');
 
 route.use('/auth', auth);
 route.use('/users', users);
@@ -15,5 +16,6 @@ route.use('/clients', clients);
 route.use('/crfqs', crfqs );
 route.use('/cquots', cquots);
 route.use('/po', po);
+route.use('/invoices', invoice);
 
 module.exports = route;

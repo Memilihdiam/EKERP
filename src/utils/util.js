@@ -41,4 +41,8 @@ const sourceType = {
     quotation: 'client_quotations'
 }
 
-module.exports = { httpStatus, typeLetter, sourceType };
+const invoiceSource = {
+    purchaseOrders: 'purchase_orders'
+}
+
+module.exports = { httpStatus, typeLetter, sourceType, invoiceSource };

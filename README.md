@@ -375,6 +375,8 @@ CREATE TABLE invoices (
     payment_status ENUM('UNPAID', 'PARTIAL', 'PAID') DEFAULT 'UNPAID',
     status ENUM('DRAFT', 'SENT', 'CANCELLED', 'DORMANT') DEFAULT 'DRAFT',
 
+    termin_group_id BIGINT DEFAULT NULL,
+
     origin_id BIGINT DEFAULT NULL,
     previous_id BIGINT DEFAULT NULL,
     revision_number INT DEFAULT NULL,
@@ -383,10 +385,10 @@ CREATE TABLE invoices (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
-    CONSTRAINT fk_inv_project FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE RESTRICT,
     CONSTRAINT fk_inv_client FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE RESTRICT,
     CONSTRAINT fk_inv_created_by FOREIGN KEY (created_by) REFERENCES employees(id) ON DELETE RESTRICT,
     CONSTRAINT fk_inv_vendor FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_inv_termin_group FOREIGN KEY (termin_group_id) REFERENCES invoices(id) ON DELETE RESTRICT,
     CONSTRAINT fk_inv_origin FOREIGN KEY (origin_id) REFERENCES invoices(id) ON DELETE RESTRICT,
     CONSTRAINT fk_inv_previous FOREIGN KEY (previous_id) REFERENCES invoices(id) ON DELETE RESTRICT 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -416,6 +418,7 @@ CREATE TABLE invoice_termins (
     invoice_id BIGINT NOT NULL,
     termin_number INT NOT NULL,
     termin_payment BIGINT NOT NULL,
+    remain_payment BIGINT NOT NULL DEFAULT 0
 
     CONSTRAINT fk_inv_id FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

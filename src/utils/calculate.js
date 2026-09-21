@@ -1,3 +1,5 @@
+const { httpStatus } = require("./util");
+
 /** 
  * Convert value to number safely. 
 */
@@ -80,4 +82,20 @@ function calculatePurchaseOrderTotals({ items = [], shipping_cost = 0, tax_amoun
     return { items: calculatedItems, subtotal, tax_amount: roundMoney(toNumber(tax_amount)), shipping_cost: roundMoney(toNumber(shipping_cost)), grand_total: grandTotal }; 
 } 
 
-module.exports = { toNumber, roundMoney, calculateItemTotal, calculateSubtotal, calculateGrandTotal, calculatePurchaseOrderTotals };
+function remainTermin(terminPayment, grandTotal){
+    if(terminPayment > grandTotal){
+        const error = new Error("The Bill Exceeds The Correct Amount");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+    const remainPayment = grandTotal - terminPayment;
+
+    if(remainPayment < 0){
+        const error = new Error("The Payment Has Been Settled");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+    return remainPayment;
+}
+
+module.exports = { toNumber, roundMoney, calculateItemTotal, calculateSubtotal, calculateGrandTotal, calculatePurchaseOrderTotals, remainTermin };
