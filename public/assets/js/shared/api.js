@@ -4,6 +4,11 @@ export const apiEndpoints = {
     session: '/api/auth/session',
     user: '/api/users/me',
     industries: '/api/clients/industry',
+    job: '/api/jobs/',
+
+    // === HUMAN RESOURCE MANAGEMENT ===
+    employee: '/api/employees',
+    addData: '/api/employees/data/add/employee',
 
     // === PROJECT MANAGEMENTS ===
     allProject: '/api/projects',

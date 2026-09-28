@@ -1,3 +1,9 @@
+function employeeCode(department_code, year, sequence){
+    const sequencePadded = String(sequence).padStart(3, '0');
+    const codeYear = year - 2000;
+    return `${department_code}${codeYear}${sequencePadded}`
+}
+
 const letterCode = async (letter_code, month, year, sequence) => {
     const nextSequenceNumber = sequence + 1;
     const sequencePadded = String(nextSequenceNumber).padStart(3, '0');
@@ -7,4 +13,4 @@ const letterCode = async (letter_code, month, year, sequence) => {
     return `${sequencePadded}/${letter_code}/${romMonth}-${year}`;
 }
 
-module.exports = {letterCode};
+module.exports = {letterCode, employeeCode};
