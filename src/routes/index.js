@@ -11,6 +11,7 @@ const crfqs = require('../modules/procurements/client_rfq/rfq.api');
 const cquots = require('../modules/procurements/client_quotation/quotation.api.js');
 const po = require('../modules/procurements/purchase_order/po.api.js');
 const invoice = require('../modules/finances/invoices/invoice.api.js');
+const notifications = require('../modules/cores/notifications/notification.api.js');
 
 route.use('/auth', auth);
 route.use('/roles', roles);
@@ -23,5 +24,6 @@ route.use('/crfqs', crfqs );
 route.use('/cquots', cquots);
 route.use('/po', po);
 route.use('/invoices', invoice);
+route.use('/notifications', notifications);
 
 module.exports = route;

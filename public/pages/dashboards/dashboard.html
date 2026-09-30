@@ -7,6 +7,12 @@
     <link rel="shortcut icon" href="/assets/images/company_icon.ico" type="image/x-icon">
     <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .card-display{
+            max-height:500px;
+            overflow-y:scroll;
+        }
+    </style>
 </head>
 <body class="bg-light">
     <div class="d-flex">
@@ -31,6 +37,7 @@
                                 <h3 class="fw-bold fs-4">Task In Week</h3>
                                 <p class="fw-lighter">Deadline Time Task</p>
                             </div>
+                            <div id="task-display" class="card-display"></div>
                         </div>
                     </div>
                 </div>
