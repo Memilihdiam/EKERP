@@ -1,5 +1,5 @@
 import { fetchUserData } from "../hris/users/user.data.js";
-import { fetchUrgentTask } from "../miscellanous/notifications/notification.data.js";
+import { fetchUrgentTask } from "../miscellaneous/notifications/notification.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     async function renderUserDisplay(){

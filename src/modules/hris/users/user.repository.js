@@ -71,3 +71,12 @@ exports.findUserById = async (userId) => {
     const [rows] = await pool.execute(query, [userId]);
     return rows[0];
 }
+
+exports.checkPassword = async (userId, connection = pool) => {
+    const [rows] = await connection.execute('SELECT password FROM employees WHERE id = ?', [userId]);
+    return rows[0];
+}
+
+exports.changePassword = async (userId, password, connection = pool) => {
+    await connection.execute('UPDATE employees SET password = ? WHERE id = ?', [password, userId]);
+}

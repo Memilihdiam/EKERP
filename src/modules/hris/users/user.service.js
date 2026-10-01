@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const redisClient = require('../../../config/redis');
 const { httpStatus } = require('../../../utils/util');
 const repository = require('./user.repository');
+const pool = require('../../../config/db');
 
 exports.authService = async (userId, password) => {
     if(!userId || !password){
@@ -72,5 +73,39 @@ exports.userData = async (userId) => {
         return { user };
     }catch(err){
         throw err;
+    }
+}
+
+exports.changePassword = async (userId, oldPassword, password) => {
+    if(!password){
+        const error = new Error("Field can't Be Null");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+
+    console.log(`${oldPassword} -> ${password}`);
+    let connection;
+    try{
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        const checkPassword = await repository.checkPassword(userId, connection);
+        console.log(checkPassword);
+        const compareOldPass = await bcrypt.compare(oldPassword, checkPassword.password);
+        if(!compareOldPass){
+            const error = new Error("Password Does'nt Match");
+            error.statusCode = httpStatus.forbidden;
+            throw error;
+        }
+
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        await repository.changePassword(userId, hashPassword, connection);
+        await connection.commit();
+    }catch(err){
+        if(connection) await connection.rollback();
+        throw err;
+    }finally{
+        if(connection) connection.release();
     }
 }

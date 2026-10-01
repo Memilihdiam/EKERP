@@ -46,3 +46,23 @@ exports.userData = async (req, res) => {
         })
     }
 }
+
+exports.changePassword = async(req, res) => {
+    const data = req.body;
+    const { id } = req.user;
+    try{
+        console.log(data);
+        await service.changePassword(id, data.oldPassword, data.password);
+
+        res.status(httpStatus.ok).json({
+            success: true,
+            message: 'Successfuly Change Data'
+        })
+    }catch(err){
+        console.log("Error while change password, ", err);
+        return res.status(err.statusCode || httpStatus.internalServerError).json({
+            success: false,
+            message: err.message || 'Internal Server Error'
+        })
+    }
+}

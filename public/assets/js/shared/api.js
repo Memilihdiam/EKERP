@@ -3,8 +3,10 @@ export const apiEndpoints = {
     login: '/api/users',
     session: '/api/auth/session',
     user: '/api/users/me',
+    password: '/api/users/me/password',
     industries: '/api/clients/industry',
     job: '/api/jobs/',
+    urgentTask: '/api/notifications/tasks/urgent',
 
     // === HUMAN RESOURCE MANAGEMENT ===
     employee: '/api/employees',
@@ -82,4 +84,28 @@ async function post(url, body){
     }
 }
 
-export { get, post };
+async function put(url, body){
+    try{
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.message);
+        }
+
+        return data;
+    }catch(err){
+        console.log('Error, ', err);
+        throw err;
+    }
+}
+
+export { get, post, put };

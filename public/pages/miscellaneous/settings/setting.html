@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.ico" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .w-card{
+            width:1000px;
+        }
+        .btn-setting{
+            width:80%;
+        }
+        .btn-setting:hover{
+            background:#d6d6d6;
+        }
+        .btn-setting:focus{
+            border:none;
+            background:#d6d6d6;
+        }
+        /* Overlay yang meredupkan seluruh halaman */
+        .page-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1050;
+            display: none;
+        }
+        /* Tab/modal di tengah */
+        .center-tab {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            /* max-height:90vh; */
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            z-index: 1060;
+            display: none;
+            /* overflow-y:auto; */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .page-overlay.show,
+        .center-tab.show {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="d-flex">
+        <div id="sidebar-display"></div>
+        <div class="flex-grow-1">
+            <div id="header-display"></div>
+            <main class="d-flex justify-content-center">
+                <div class="w-card m-2 p-2 shadow-sm rounded">
+                    <div class="text-center">
+                        <h1>Settings</h1>
+                        <hr>
+                    </div>
+                    <div id="btn-container" class="text-center">
+                        <button class="btn btn-setting" id="change-password-btn">Change Password</button>
+                    </div>
+                </div>
+            </main>
+            <!-- Overlay -->
+            <div class="page-overlay" id="overlay-page"></div>
+
+            <!-- Tab di tengah -->
+            <div class="center-tab" id="tab">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0" id="tab-title"></h4>
+                    <button type="button" class="btn-close" id="closeTab"></button>
+                </div>
+                <hr>
+                <div id="tab-content" style="max-height:80vh; overflow-y:auto;"></div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/shared/auth.js"></script>
+    <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/layout/sidebar.js"></script>
+    <script type="module" src="/assets/js/modules/miscellaneous/settings/setting.style.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

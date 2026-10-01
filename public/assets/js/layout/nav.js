@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item" href="/pages/dashboards/profile.html"><i class="bi bi-person-fill"></i> Profile</a></li>
-                                        <li><a class="dropdown-item" href="/pages/setting.html"><i class="bi bi-gear-fill"></i> Settings</a></li>
+                                        <li><a class="dropdown-item" href="/pages/miscellaneous/settings/setting.html"><i class="bi bi-gear-fill"></i> Settings</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><button class="dropdown-item text-danger" id="logout-btn"><i class="bi bi-door-open-fill"></i> Sign out</button></li>
                                     </ul>
