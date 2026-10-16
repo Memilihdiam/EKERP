@@ -787,7 +787,7 @@ CREATE TABLE purchase_requests (
     request_date DATE NOT NULL,
     required_date DATE NOT NULL,
     
-    status ENUM('Draft', 'Submitted', 'Manager_Approved', 'Finance_Approved', 'Rejected', 'Processed') DEFAULT 'Draft',
+    status ENUM('DRAFT', 'SUBMITTED', 'MANAGER_APPVROVED', 'FINANCE_APPROVED', 'REJECTED', 'PROCESSED') DEFAULT 'DRAFT',
     total_estimated_value BIGINT DEFAULT 0,
     notes TEXT,
     
@@ -821,7 +821,7 @@ CREATE TABLE purchase_orders (
     shipping_cost BIGINT DEFAULT 0,
     grand_total BIGINT NOT NULL,
     
-    status ENUM('Draft', 'Sent_to_Vendor', 'On_Delivery', 'Completed', 'Cancelled') DEFAULT 'Draft',
+    status ENUM('DRAFT', 'SEND_TO_VENDOR', 'ON_DELIVERY', 'COMPLETED', 'CANCELLED') DEFAULT 'Draft',
     payment_status ENUM('Unpaid', 'Partial', 'Paid') DEFAULT 'Unpaid',
     
     terms_and_conditions TEXT,

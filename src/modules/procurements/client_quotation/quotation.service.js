@@ -1,6 +1,6 @@
 const pool = require('../../../config/db');
 const redisClient = require('../../../config/redis');
-const { httpStatus, typeLetter } = require('../../../utils/util');
+const { httpStatus, typeLetter, statusList } = require('../../../utils/util');
 const { letterCode } = require('../../../utils/code-generator');
 const repository = require('./quotation.repository');
 const letterService = require('../../cores/letter/letter.service');
@@ -100,6 +100,68 @@ exports.addQuotForRfq = async (quotData, itemData) => {
 
         await connection.commit();
         await redisClient.del(`client-quot:${quotData.client_id}`)
+    }catch(err){
+        if(connection) await connection.rollback();
+        throw err;
+    }finally{
+        if(connection) connection.release();
+    }
+}
+
+exports.updateStatus = async (data) => {
+    if(!data){
+        const error = new Error("Field Can't Be Null");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+
+    let connection;
+    try{
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        const detail = await repository.findQuotByIdForRfq(data.id);
+        if (!detail) {
+            const error = new Error("Data not found");
+            error.statusCode = httpStatus.notFound;
+            throw error;
+        }
+
+        // Ambil status saat ini dan status tujuan
+        const currentStatus = statusList.find(
+            (item) =>
+                item.value === detail.status &&
+                item.modul.includes("QUOTATION")
+        );
+
+        const updateStatus = statusList.find(
+            (item) =>
+                item.value === data.status &&
+                item.modul.includes("QUOTATION")
+        );
+
+        // Validasi status harus terdaftar untuk modul
+        if (!currentStatus || !updateStatus) {
+            const error = new Error("Invalid status");
+            error.statusCode = httpStatus.badRequest;
+            throw error;
+        }
+
+        // Status tidak boleh mundur ke level lebih rendah
+        if (updateStatus.level < currentStatus.level) {
+            const error = new Error(
+                `Status tidak bisa diturunkan dari ${currentStatus.name} ke ${updateStatus.name}`
+            );
+            error.statusCode = httpStatus.badRequest;
+            throw error;
+        }
+
+        await repository.updateStatus(data.id, data.status, connection);
+
+        await connection.commit();
+        await redisClient.del(`quot:${data.id}`);
+        await redisClient.del('approval-client-procurements');
+        await redisClient.del(`quot:${data.id}`);
     }catch(err){
         if(connection) await connection.rollback();
         throw err;

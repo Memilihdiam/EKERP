@@ -8,4 +8,6 @@ route.get('/detail/:id', verifyToken, controller.findRfq);
 
 route.post('/', verifyToken, controller.addRfq);
 
+route.put('/status/update', verifyToken, controller.updateStatus);
+
 module.exports = route;

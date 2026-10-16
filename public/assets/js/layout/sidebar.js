@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
         {name: 'Dashboard', path: '/pages/dashboards/dashboard', icon: 'bi bi-grid'},
         {name: 'Employees', path: '/pages/hris/employees/employees-list.html', icon: 'bi bi-file-person'},
         {name: 'Projects', path: '/pages/projects/project-list', icon: 'bi bi-gear'},
-        {name: 'Clients', path: '/pages/clients/client-list', icon: 'bi bi-people'}
+        {name: 'Clients', path: '/pages/clients/client-list', icon: 'bi bi-people'},
+        {name: 'Approvals', path: '/pages/cores/approvals/approval.html', icon: 'bi bi-file-earmark-check'}
     ];
 
     // Cek state di localStorage, default set ke 'collapsed' (tertutup)

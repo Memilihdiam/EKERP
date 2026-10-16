@@ -1,13 +1,13 @@
 const pool = require("../../../config/db");
 const redisClient = require("../../../config/redis");
-const { httpStatus, typeLetter, sourceType } = require("../../../utils/util");
+const { httpStatus, typeLetter, sourceType, statusList } = require("../../../utils/util");
 const repository = require('./po.repository');
 const letterService = require('../../cores/letter/letter.service');
 const { letterCode } = require("../../../utils/code-generator");
 const { calculatePurchaseOrderTotals } = require("../../../utils/calculate");
 
 exports.getClientPo = async (clientId) => {
-    if(!clientId){
+    if (!clientId) {
         const error = new Error('Attribute ID Null');
         error.statusCode = httpStatus.badRequest;
         throw error;
@@ -15,26 +15,26 @@ exports.getClientPo = async (clientId) => {
 
     const cachedKey = `client-po:${clientId}`;
     const cachedEx = 3600;
-    try{
+    try {
         const cacheData = await redisClient.get(cachedKey);
-        if(cacheData){
+        if (cacheData) {
             return { poData: JSON.parse(cacheData) };
         }
 
         const poData = await repository.getClientPo(clientId, sourceType.quotation);
-        if(poData.length === 0){
+        if (poData.length === 0) {
             return { poData: [] };
         }
 
         await redisClient.set(cachedKey, JSON.stringify(poData), 'EX', cachedEx);
         return { poData };
-    }catch(err){
+    } catch (err) {
         throw err;
     }
 }
 
 exports.getDetailPo = async (poId) => {
-    if(!poId){
+    if (!poId) {
         const error = new Error('Attribute ID Null');
         error.statusCode = httpStatus.badRequest;
         throw error;
@@ -42,21 +42,21 @@ exports.getDetailPo = async (poId) => {
 
     const cachedKey = `detail-po:${poId}`;
     const cachedEx = 3600;
-    try{
+    try {
         const cacheData = await redisClient.get(cachedKey);
-        if(cacheData){
+        if (cacheData) {
             return JSON.parse(cacheData);
         }
 
         const poData = await repository.getPoDetail(poId);
-        if(!poData){
+        if (!poData) {
             const error = new Error('Purchase Order Data Not Found');
             error.statusCode = httpStatus.notFound;
             throw error;
         }
 
         let poItems = await repository.getPoItems(poId);
-        if(poItems.length === 0){
+        if (poItems.length === 0) {
             poItems = [];
         }
 
@@ -67,39 +67,39 @@ exports.getDetailPo = async (poId) => {
 
         await redisClient.set(cachedKey, JSON.stringify(result), 'EX', cachedEx);
         return result;
-    }catch(err){
+    } catch (err) {
         throw err;
     }
 }
 
 exports.createPo = async (poData, poItems) => {
-    if(!poData || !poItems){
+    if (!poData || !poItems) {
         const error = new Error("Field Can't Be Null");
         error.statusCode = httpStatus.badRequest;
         throw error;
     }
-    
+
     const month = new Date().getMonth() + 1;
     const year = new Date().getFullYear();
     const type = typeLetter.sps;
 
     let connection;
-    try{
+    try {
         connection = await pool.getConnection();
         await connection.beginTransaction();
 
         const sequence = await letterService.letterSequence(type, month, year, connection);
-        if(!poData.po_number){
+        if (!poData.po_number) {
             const code = await letterService.letterCode(type);
             poData.po_number = await letterCode(code, month, year, sequence);
         }
 
         const allowedSourceType = Object.values(sourceType);
-        if(!allowedSourceType.includes(poData.source_type)){
+        if (!allowedSourceType.includes(poData.source_type)) {
             throw new Error('Invalid PO Source Type');
         }
-        
-        const totals = calculatePurchaseOrderTotals({items: poItems, shipping_cost: poData.shipping_cost, tax_amount: poData.tax_amount});
+
+        const totals = calculatePurchaseOrderTotals({ items: poItems, shipping_cost: poData.shipping_cost, tax_amount: poData.tax_amount });
         const data = {
             ...poData,
             subtotal: totals.subtotal,
@@ -109,7 +109,7 @@ exports.createPo = async (poData, poItems) => {
         }
 
         const poId = await repository.addPo(data, connection);
-        if(poItems && poItems.length > 0){
+        if (poItems && poItems.length > 0) {
             await repository.addPoItems(poId, totals.items, connection);
         }
 
@@ -118,10 +118,73 @@ exports.createPo = async (poData, poItems) => {
         await connection.commit();
 
         await redisClient.del(`client-po:${poData.client_id}`)
-    }catch(err){
-        if(connection) await connection.rollback();
+    } catch (err) {
+        if (connection) await connection.rollback();
         throw err;
-    }finally{
-        if(connection) connection.release();
+    } finally {
+        if (connection) connection.release();
+    }
+}
+
+exports.updateStatus = async (data) => {
+    if (!data) {
+        const error = new Error("Field Can't Be Null");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        const detail = await repository.getPoDetail(data.id);
+        if (!detail) {
+            const error = new Error("Data not found");
+            error.statusCode = httpStatus.notFound;
+            throw error;
+        }
+
+        // Ambil status saat ini dan status tujuan
+        const currentStatus = statusList.find(
+            (item) =>
+                item.value === detail.status &&
+                item.modul.includes("PURCHASE ORDERS")
+        );
+
+        const updateStatus = statusList.find(
+            (item) =>
+                item.value === data.status &&
+                item.modul.includes("PURCHASE ORDERS")
+        );
+
+        // Validasi status harus terdaftar untuk modul
+        if (!currentStatus || !updateStatus) {
+            const error = new Error("Invalid status");
+            error.statusCode = httpStatus.badRequest;
+            throw error;
+        }
+
+        // Status tidak boleh mundur ke level lebih rendah
+        if (updateStatus.level < currentStatus.level) {
+            const error = new Error(
+                `Status tidak bisa diturunkan dari ${currentStatus.name} ke ${updateStatus.name}`
+            );
+            error.statusCode = httpStatus.badRequest;
+            throw error;
+        }
+
+        await repository.updateStatus(data.id, data.status);
+
+        await connection.commit();
+        await redisClient.del(`detail-po:${data.id}`);
+        await redisClient.del('approval-client-procurements');
+        await redisClient.del(`client-po:${data.id}`);
+        await redisClient.del(`detail-po:${data.id}`);
+    } catch (err) {
+        if (connection) await connection.rollback();
+        throw err;
+    } finally {
+        if (connection) connection.release();
     }
 }

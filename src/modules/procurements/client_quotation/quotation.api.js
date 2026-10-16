@@ -7,4 +7,6 @@ route.get('/client/:clientId', verifyToken, controller.getQuotByClient);
 
 route.post('/', verifyToken, controller.addQuot);
 
+route.put('/status/update', verifyToken, controller.updateStatus);
+
 module.exports = route;

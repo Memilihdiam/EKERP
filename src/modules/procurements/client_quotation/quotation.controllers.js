@@ -62,3 +62,21 @@ exports.addQuot = async (req, res) => {
         })
     }
 }
+
+exports.updateStatus = async (req, res) => {
+    const data = req.body;
+    try{
+        await service.updateStatus(data);
+
+        res.status(httpStatus.ok).json({
+            success: true,
+            message: 'Successfuly Update Data'
+        })
+    }catch(err){
+        console.log('Error while update quotation data, ', err);
+        return res.status(err.statusCode || httpStatus.internalServerError).json({
+            success: false,
+            message: err.message || 'Internal Server Error'
+        })
+    }
+}

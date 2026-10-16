@@ -45,4 +45,24 @@ const invoiceSource = {
     purchaseOrders: 'purchase_orders'
 }
 
-module.exports = { httpStatus, typeLetter, sourceType, invoiceSource };
+const statusList = [
+    { name: 'Draft', value: 'DRAFT', level: 1, modul: ['REQUEST FOR QUOTATION', 'QUOTATION', 'PURCHASE ORDERS', 'PURCHASE REQUESTS'] },
+    { name: 'Submitted', value: 'SUBMITTED', level: 2, modul: ['REQUEST FOR QUOTATION', 'QUOTATION', 'PURCHASE REQUESTS'] },
+    { name: 'Under Review', value: 'UNDER_REVIEW', level: 3, modul: ['REQUEST FOR QUOTATION'] },
+    { name: 'Quoted', value: 'QUOTED', level: 4, modul: ['REQUEST FOR QUOTATION'] },
+    { name: 'Closed', value: 'CLOSED', level: 5, modul: ['REQUEST FOR QUOTATION'] },
+    { name: 'Cancelled', value: 'CANCELLED', level: 99, modul: ['REQUEST FOR QUOTATION', 'QUOTATION', 'PURCHASE ORDERS'] },
+    { name: 'Sent', value: 'SENT', level: 3, modul: ['QUOTATION'] },
+    { name: 'Negotiation', value: 'NEGOTIATION', level: 4, modul: ['QUOTATION'] },
+    { name: 'Accepted', value: 'ACCEPTED', level: 5, modul: ['QUOTATION'] },
+    { name: 'Expired', value: 'EXPIRED', level: 99, modul: ['QUOTATION'] },
+    { name: 'Send To Vendor', value: 'SEND_TO_VENDOR', level: 2, modul: ['PURCHASE ORDERS'] },
+    { name: 'On Delivery', value: 'ON_DELIVERY', level: 3, modul: ['PURCHASE ORDERS'] },
+    { name: 'Completed', value: 'COMPLETED', level: 5, modul: ['PURCHASE ORDERS'] },
+    { name: 'Manager Approved', value: 'MANAGER_APPROVED', level: 3, modul: ['PURCHASE REQUESTS'] },
+    { name: 'Finance Approved', value: 'FINANCE_APPROVED', level: 4, modul: ['PURCHASE REQUESTS'] },
+    { name: 'Rejected', value: 'REJECTED', level: 99, modul: ['QUOTATION', 'PURCHASE REQUESTS'] },
+    { name: 'Processed', value: 'PROCESSED', level: 5, modul: ['PURCHASE ORDERS'] },
+]
+
+module.exports = { httpStatus, typeLetter, sourceType, invoiceSource, statusList };

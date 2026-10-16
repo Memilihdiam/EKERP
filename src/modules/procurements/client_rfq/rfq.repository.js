@@ -61,3 +61,7 @@ exports.addRfqItems = async (items, rfqId, connection) => {
     ]);
     await connection.query(query, [values]);
 }
+
+exports.updateStatus = async (id, status, connection = pool) => {
+    await connection.execute('UPDATE client_rfqs SET status = ? WHERE id = ?', [status, id]);
+}

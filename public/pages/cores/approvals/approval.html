@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval</title>
+    <link rel="shortcut icon" href="/assets/images/company_icon.ico" type="image/x-icon">
+    <link href="/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/bootstrap/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        .card {
+            max-height: 500px;
+        }
+
+        .card {
+            max-height: 500px;
+        }
+
+        .table-container {
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        .table-container thead th {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            z-index: 2;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="d-flex">
+        <div id="sidebar-display"></div>
+        <div class="flex-grow-1">
+            <div id="header-display"></div>
+            <main class="m-2">
+                <div class="row g-3 m-3">
+                    <div class="col-6">
+                        <div class="card shadow-sm p-2">
+                            <div class="card-title border-bottom">
+                                <h3 class="fw-bold">Client Procurements</h3>
+                                <p class="fw-lighter">Wait for approval</p>
+                            </div>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Number</th>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Starting</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-status"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/assets/js/shared/auth.js"></script>
+    <script type="module" src="/assets/js/layout/nav.js"></script>
+    <script type="module" src="/assets/js/layout/sidebar.js"></script>
+    <script type="module" src="/assets/js/modules/cores/approvals/approval.style.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 const pool = require('../../../config/db');
 const redisClient = require('../../../config/redis');
 const { letterCode } = require('../../../utils/code-generator');
-const { httpStatus, typeLetter } = require('../../../utils/util');
+const { httpStatus, typeLetter, statusList } = require('../../../utils/util');
 const repository = require('./rfq.repository');
 const letterService = require('../../cores/letter/letter.service');
 
@@ -120,6 +120,69 @@ exports.addRfq = async (rfq, items) => {
         await connection.commit();
         await redisClient.del('all-client-rfq');
         await redisClient.del(`client-rfq:${rfq.client_id}`);
+    }catch(err){
+        if(connection) await connection.rollback();
+        throw err;
+    }finally{
+        if(connection) connection.release();
+    }
+}
+
+exports.updateStatus = async (rfqData) => {
+    if(!rfqData){
+        const error = new Error("Field Can't Be Null");
+        error.statusCode = httpStatus.badRequest;
+        throw error;
+    }
+
+    let connection;
+    try{
+        connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        const detail = await repository.fetchRfqById(rfqData.id);
+        if (!detail) {
+            const error = new Error("Data not found");
+            error.statusCode = httpStatus.notFound;
+            throw error;
+        }
+
+        // Ambil status saat ini dan status tujuan
+        const currentStatus = statusList.find(
+            (item) =>
+                item.value === detail.status &&
+                item.modul.includes("REQUEST FOR QUOTATION")
+        );
+
+        const updateStatus = statusList.find(
+            (item) =>
+                item.value === rfqData.status &&
+                item.modul.includes("REQUEST FOR QUOTATION")
+        );
+
+        // Validasi status harus terdaftar untuk modul
+        if (!currentStatus || !updateStatus) {
+            const error = new Error("Invalid status");
+            error.statusCode = httpStatus.badRequest;
+            throw error;
+        }
+
+        // Status tidak boleh mundur ke level lebih rendah
+        if (updateStatus.level < currentStatus.level) {
+            const error = new Error(
+                `Status tidak bisa diturunkan dari ${currentStatus.name} ke ${updateStatus.name}`
+            );
+            error.statusCode = httpStatus.badRequest;
+            throw error;
+        }
+        await repository.updateStatus(rfqData.id, rfqData.status, connection);
+        
+        await connection.commit();
+        await redisClient.del(`rfq-detail:${rfqData.id}`);
+        await redisClient.del('approval-client-procurements');
+        await redisClient.del('all-client-rfq');
+        await redisClient.del('all-clients');
+        await redisClient.del(`rfq-detail${rfqData.id}`);
     }catch(err){
         if(connection) await connection.rollback();
         throw err;

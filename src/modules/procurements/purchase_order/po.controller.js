@@ -56,11 +56,29 @@ exports.addPo = async (req, res) => {
         await service.createPo(poData, poItems);
 
         res.status(httpStatus.created).json({
-            success: true,
+                success: true,
             message: 'Successfuly Create Data'
         })
     }catch(err){
         console.log('Error while create po client, ', err);
+        return res.status(err.statusCode || httpStatus.internalServerError).json({
+            success: false,
+            message: err.message || 'Internal Server Error'
+        })
+    }
+}
+
+exports.updateStatus = async (req, res) => {
+    const data = req.body;
+    try{
+        await service.updateStatus(data);
+
+        res.status(httpStatus.ok).json({
+            success: true,
+            message: 'Successfuly Update Data'
+        })
+    }catch(err){
+        console.log('Error while update po data, ', err);
         return res.status(err.statusCode || httpStatus.internalServerError).json({
             success: false,
             message: err.message || 'Internal Server Error'

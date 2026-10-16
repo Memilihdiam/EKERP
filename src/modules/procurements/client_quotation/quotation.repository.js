@@ -71,3 +71,7 @@ exports.addQuotItem = async (itemData, quotId, connection = pool) => {
     
     await connection.query(query, [values]);
 }
+
+exports.updateStatus = async (id, status, connection = pool) => {
+    await connection.execute('UPDATE client_quotations SET status = ? WHERE id = ?', [status, id]);
+}

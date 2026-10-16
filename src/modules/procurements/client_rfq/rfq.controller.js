@@ -79,3 +79,21 @@ exports.addRfq = async (req, res) => {
         res.status(err.statusCode || httpStatus.internalServerError).json({ success: false, message: err.message });
     }
 }
+
+exports.updateStatus = async (req, res) => {
+    const data = req.body;
+    try{
+        await service.updateStatus(data);
+
+        res.status(httpStatus.ok).json({
+            success: true,
+            message: "Successfuly Update Data"
+        })
+    }catch(err){
+        console.log('Error while update rfq data, ', err);
+        return res.status(err.statusCode || httpStatus.internalServerError).json({
+            success: false,
+            message: err.message || 'Internal Server Error'
+        })
+    }
+}

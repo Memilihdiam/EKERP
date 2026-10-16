@@ -5,7 +5,10 @@ exports.getPoDetail = async (id) => {
         SELECT 
             p.*, 
             i.*,
-            c.*
+            c.company_name,
+            c.company_email,
+            c.company_number,
+            c.address AS company_address
         FROM purchase_orders p 
         LEFT JOIN po_items i ON i.po_id = p.id 
         LEFT JOIN clients c ON p.client_id = c.id
@@ -60,4 +63,8 @@ exports.addPoItems = async (poId, poItem, connection = pool) => {
         item.total_price
     ])
     await connection.query(query, [values]);
+}
+
+exports.updateStatus = async (id, status, connection = pool) => {
+    await connection.execute('UPDATE purchase_orders SET status = ? WHERE id = ?', [status, id]);
 }
