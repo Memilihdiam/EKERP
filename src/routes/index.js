@@ -1,6 +1,8 @@
 const route = require('express').Router();
 
 const auth = require('../middlewares/auth.api.js');
+const files = require('../modules/cores/storages/file.api.js');
+const reviews = require('../modules/cores/overreviews/overreview.api.js');
 const roles = require('../modules/cores/roles/role.api.js');
 const users = require('../modules/hris/users/user.api');
 const employees = require('../modules/hris/employees/employee.api.js');
@@ -15,6 +17,8 @@ const notifications = require('../modules/cores/notifications/notification.api.j
 const approvals = require('../modules/cores/approvals/approval.api.js');
 
 route.use('/auth', auth);
+route.use('/files', files);
+route.use('/reviews', reviews);
 route.use('/roles', roles);
 route.use('/users', users);
 route.use('/employees', employees);

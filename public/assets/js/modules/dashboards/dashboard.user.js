@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         taskDisplay.innerHTML = `
             <table class="table">
+                <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Title</th>
+                        <th>Client</th>
+                        <th>Starting</th>
+                        <th>End</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
                 <tbody>
                     ${taskRow}
                 </tbody>

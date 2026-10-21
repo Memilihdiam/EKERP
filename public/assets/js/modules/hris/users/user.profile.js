@@ -1,3 +1,4 @@
+import { apiEndpoints } from "../../../shared/api.js";
 import { fetchUserData } from "./user.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
             display.textContent = userData.name;
         });
 
-        const userPhoto = userData.image_path ?? '/assets/images/default_profile_image.png';
+        const userPhoto = apiEndpoints.employeePhotoProfile ?? '/assets/images/default_profile_image.png';
         photoProfileDisplay.innerHTML = `<img src="${userPhoto}" width="80" height="80" class="d-flex rounded-circle me-2" aria-expanded="false">`;
     }
 
