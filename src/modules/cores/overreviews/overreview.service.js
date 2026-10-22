@@ -58,3 +58,24 @@ exports.valueProject = async () => {
     await redisClient.set(cachedKey, JSON.stringify(value), 'EX', cachedEx);
     return { value }
 }
+
+exports.paymentInvoicesBasedStatus = async () => {
+    const cachedKey = 'payment-invoice';
+    const cachedEx = 3600;
+
+    const cacheData = await redisClient.get(cachedKey);
+    if(cacheData){
+        return { payment: JSON.parse(cacheData) };
+    }
+
+    const payment = await repository.paymentInvoiceBasedStatus();
+    if(!payment){
+        payment = [{
+            paid_payment: 0,
+            unpaid_payment: 0
+        }]
+    }
+
+    await redisClient.set(cachedKey, JSON.stringify(payment), 'EX', cachedEx);
+    return { payment };
+}

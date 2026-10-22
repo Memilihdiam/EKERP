@@ -9,3 +9,8 @@ export async function fetchValueProject(){
     const response = await get(apiEndpoints.valueProject);
     return response;
 }
+
+export async function fetchInvoicePayment(){
+    const response = await get(apiEndpoints.paymentInvoice);
+    return response;
+}

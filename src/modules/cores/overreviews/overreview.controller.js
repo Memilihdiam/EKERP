@@ -38,3 +38,21 @@ exports.valueProject = async (req, res) => {
         })
     }
 }
+
+exports.paymentInvoicesBasedStatus = async(req, res) => {
+    try{
+        const { payment } = await service.paymentInvoicesBasedStatus();
+
+        res.status(httpStatus.ok).json({
+            success: true,
+            message: 'Successfuly Fetch Data',
+            payment
+        })
+    }catch(err){
+        console.log('Error while fetch data payment invoice, ', err);
+        return res.status(err.statusCode || httpStatus.internalServerError).json({
+            success: false,
+            message: err.message || 'Internal Server Error'
+        })
+    }
+}

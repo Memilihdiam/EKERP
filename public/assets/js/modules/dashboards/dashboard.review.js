@@ -1,4 +1,4 @@
-import { fetchReviewData, fetchValueProject } from "./dashboard.data.js";
+import { fetchInvoicePayment, fetchReviewData, fetchValueProject } from "./dashboard.data.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const currencyFormat = new Intl.NumberFormat('id-ID', {
@@ -76,9 +76,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const PODisplay = document.getElementById('po-value-display');
 
         quotationDisplay.innerHTML = `<p>${currencyFormat.format(value.quotation_value)}</p>`
-        PODisplay.innerHTML = `<p>${value.po_value}</p>`
+        PODisplay.innerHTML = `<p>${currencyFormat.format(value.po_value)}</p>`
+    }
+
+    async function renderPaymentInvoice(){
+        const data = await fetchInvoicePayment();
+        const payment = data.payment;
+
+        const paidDisplay = document.getElementById('invoice-paid-display');
+        const unpaidDisplay = document.getElementById('invoice-unpaid-display');
+
+        paidDisplay.innerHTML = `<p>${currencyFormat.format(payment.paid_payment)}</p>`
+        unpaidDisplay.innerHTML = `<p>${currencyFormat.format(payment.unpaid_payment)}</p>`
     }
 
     renderProcurementReview();
     renderValue();
+    renderPaymentInvoice();
 })

@@ -15,6 +15,7 @@ export const apiEndpoints = {
     // === Review ===
     procurementsReview: '/api/reviews/procurements',
     valueProject: '/api/reviews/projects/value',
+    paymentInvoice: '/api/reviews/invoices/summary',
     
     // === Approval ===
     clientProcurementsApproval: '/api/approvals/procurements',
